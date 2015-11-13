@@ -1,0 +1,22 @@
+Tables
+
+1. UserInfo
+
+Schema
+
+email -  
+Password - 
+security_qs -
+firstname -
+lastname -
+
+
+
+2. WeatherHistory
+
+Schema
+
+email -
+starting_loc -
+ending_loc -
+timestamp -
