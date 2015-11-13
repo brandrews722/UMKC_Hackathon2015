@@ -1,0 +1,41 @@
+
+<ion-view title="User resgistration" ng-controller="registrationCtrlr">
+    <ion-header-bar class="bar-positive">
+                  <h1 class="title">User registration</h1>
+                 <button class="button button-icon" ng-click="goToLogin()">Login
+        <i class="icon ion-log-in"></i>
+      </button>
+                  </ion-header-bar>
+    <ion-content padding="true" scroll="false" class="has-header">
+        <form >
+            <ion-list>
+                <label class="item item-input">
+                    <span class="input-label">Username</span>
+                    <input id="txt_uname" type="email" placeholder="Email">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input id="txt_pwd" type="password" placeholder="Password">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Re enter</span>
+                    <input type="password" placeholder="Password">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Mobile</span>
+                    <input id="txt_mobile" type="tel" placeholder="Mobile" maxlength="10">
+                </label>
+                 <label class="item item-input">
+                    <span class="input-label">Name</span>
+                    <input id="txt_name" type="text" placeholder="Nick name">
+                </label>
+               <img id="imgDisplay" />
+                <div id="status"></div>
+                <button id="cameraButton" class="button button-royal button-block button-shape" ng-click="pictureCollect($event)">Take Picture</button>
+                <button id="galleryButton"class="button button-royal button-block button-shape" ng-click="pictureCollect($event)">Select Picture</button>
+               
+            </ion-list>
+             <button class="button button-royal button-block button-shape" ng-submit="completeRegistration()">Sign up</button>
+        </form>
+    </ion-content>
+</ion-view>
