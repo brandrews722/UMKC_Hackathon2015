@@ -1,33 +1,38 @@
-<ion-view view-title="WeatherInfo"  ng-controller="weatherCtrl">
-        <ion-header-bar class="bar-royal">
+<ion-view view-title="WeatherInfo" ng-controller="weatherCtrl">
+    <ion-header-bar class="bar-royal">
         <h1 class="title">Doraa</h1>
-            
-        
-        </ion-header-bar>
-     <ion-content>
-         
+
+
+    </ion-header-bar>
+    <ion-content>
+
         <form class="list" ng-controller="weatherCtrl" ng-init="init()">
             <div class="row">
-            <div class="col">
-                  <label class="item item-input" name="txt_Source">
-                <i class="icon ion-search placeholder-icon"></i>
-                <input id="txt_SourcePlace" type="search" placeholder="Source">
-            </label>
+                <div class="col">
+                    <label class="item item-input" name="txt_Source">
+                        <i class="icon ion-search placeholder-icon"></i>
+                        <input id="txt_SourcePlace" type="search" placeholder="Source" ng-model="txt_SourcePlace">
+                    </label>
                 </div>
                 <div class="col">
-                   <label class="item item-input" name="txt_Destination">
-                <i class="icon ion-search placeholder-icon"></i>
-                <input id="txt_DestinationPlace" type="search" placeholder="Destination">
-            </label>
+                    <label class="item item-input" name="txt_Destination">
+                        <i class="icon ion-search placeholder-icon"></i>
+                        <input id="txt_DestinationPlace" type="search" placeholder="Destination">
+                    </label>
                 </div>
             </div>
-                             <button class="button button-balanced button-block ">Show route</button>
-               <button class="button button-positive button-block ">History</button> 
-         
+            <button class="button button-balanced button-block " ng-click="doEverything()">Show route</button>
+            <!--               <button class="button button-positive button-block ">History</button> -->
 
-    
- <div id="map"> </div>
-              
-      </ion-content>
- 
+
+
+            <div id="map"> </div>
+            <div class="row">
+                <div class="col" id="weatherStart"></div>
+                <div class="col" id="weatherIncrements"></div>
+                <div class="col" id="weatherEnd"></div>
+            </div>
+
+    </ion-content>
+
 </ion-view>
