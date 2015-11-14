@@ -1,0 +1,1 @@
+This project is about providing weather information along a path that the user decides to travel.
