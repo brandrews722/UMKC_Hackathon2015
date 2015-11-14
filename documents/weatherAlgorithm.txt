@@ -1,0 +1,15 @@
+Inputs-
+    Start.lat
+    Start.long
+    End.lat
+    End.long
+    duration
+
+Variables uses:
+    numberPoints = duration/7200;  //7200 is number of seconds in 2 hours
+    latDist = End.lat - Start.lat;
+    longDist = End.long - End.long;
+
+point(x)
+    lat  = x * (latDist/numberPoints) +  Start.lat
+    long = x * (longDist/numberPoints) + Start.long
