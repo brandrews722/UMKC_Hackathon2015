@@ -1,12 +1,157 @@
-var appController = angular.module('doraa.controllers', [])
+var appController = angular.module('doraa.controllers', ['ionic','doraa.userServices'])
 
-appController.controller('loginCtrl', function ($scope, $state) {
-    $scope.login = function () {
-        $state.go('main.dashboard.weather');
+//This is the controller for the login page functionality.
+appController.controller('loginCtrl', function($scope,$state,appUserServices,$window) {
+    var loginFailedCount=0;
+     $scope.userName=""
+     $scope.password="";
+    var userData;
+    
+$scope.getUserDetails =function()
+{
+    
+   $scope.userName = document.getElementById('txt_UserName').value; 
+     if($scope.userName!=null && $scope.userName!="" && loginFailedCount==0)
+    {
+         userData=null;
+        appUserServices.login($scope.userName,onUserNameFound_Success);
+    }
+}
+    $scope.login = function()
+{   
+  
+     $scope.password = document.getElementById('txt_Password').value;
+   if($scope.password!=null && userData!=null && userData.password!=null)
+   {
+          loginFailedCount++;
+       if(loginFailedCount<3){
+       if(userData.password != $scope.password)
+       {
+         
+           document.getElementById('err_Password').innerHTML="You have " + (3-loginFailedCount) + " attempts left. "
+           if(document.getElementById('err_Password').classList.contains('hide')){
+           document.getElementById('err_Password').classList.remove('hide');
+       }
+          
+       }
+       else{
+        loginFailedCount=0;
+       alert('Welcome ' + userData.name);
+       $state.go('main.dashboard.weather');
+       }
+       }
+       else
+       {
+           appUserServices.deactivateUser(userData,onUserDeactivated_Success);
+     
+       }
+   }
+        else
+        {
+            alert("There was some issue with login");
+        }
+ 
+    
+}
+$scope.goToRegistration =function()
+{
+    $state.go('register')
+}
+$scope.reloadLogin =function()
+{
+   $window.location.reload(true);
+}
+   function onUserNameFound_Success(data)
+    {
+       
+        if(data!=null)
+        {
+        loginFailedCount=0;
+            userData = data;
+           
+            if(userData.userName==$scope.userName)
+            {
+                document.getElementById('txt_UserName').disabled=true;
+                if(document.getElementById('lbl_Password').classList.contains('passwordLabel')){
+               document.getElementById('lbl_Password').classList.remove('passwordLabel');
+                document.getElementById('btn_Login').classList.remove('passwordLabel');
+                    document.getElementById('btn_ReLogin').classList.remove('passwordLabel');
+                    
+                }
+                document.getElementById('err_UserName').classList.add('hide');
+                loginFailedCount=0;
+            }
+            else
+            {
+                      document.getElementById('err_UserName').innerHTML="You do not have an account or your acccount might not be active.";
+                     document.getElementById('err_UserName').classes.remove('hide');
+            }
+                
+        }
+        
+    }
+    function onUserDeactivated_Success(result)
+    {
+              document.getElementById('err_Password').innerHTML= "Your account has been deactivated";
+            if(document.getElementById('err_Password').classList.contains('hide')){
+           document.getElementById('err_Password').classList.remove('hide');
+                
+       }
     }
 })
+//This is the controller for the registration page functionality.
+appController.controller('signUpController', function($scope,$state,$http,appUserServices) {
+    document.getElementById('txt_Name').value ="";
+    document.getElementById('txt_userName').value ="";
 
-appController.controller('signUpController', function ($scope, $state) {
+ //Redirect to the login page after successfull registration.
+    $scope.goToLoginPage =function()
+ {
+     $state.go('login');
+ }
+ //Submit the user registration data to the database.
+ $scope.submitForm = function(isValid) {
+$scope.userToBeAdded={};
+		// check to make sure the form is completely valid
+		if (isValid) { 
+           $scope.userToBeAdded.name= document.getElementById('txt_Name').value;
+            $scope.userToBeAdded.userName=document.getElementById('txt_userName').value;
+            $scope.userToBeAdded.password =generatePassword($scope.userToBeAdded.name);
+            $scope.userToBeAdded.uerLoginCount=0;
+            $scope.userToBeAdded.status="Active";
+          
+            if($scope.userToBeAdded!=null)
+            {
+                //appUserServices.emailUser($scope.userToBeAdded,onUserRegistration_Success);
+                appUserServices.registerUser($scope.userToBeAdded,onUserRegistration_Success);
+            }
+	        
+		}
+
+	};
+    function onUserRegistration_Success(response,user)
+    {
+       if(response!=null)
+       {
+           appUserServices.emailUser(user,onEmailSend_Success);    
+           
+       }
+    }
+    function onEmailSend_Success(response)
+    {
+        alert("Thank you " +  $scope.userToBeAdded.name +". You would receive your password to " +  $scope.userToBeAdded.userName );
+                $state.go('login');  
+    }
+    function generatePassword(key)
+    {
+        var prefix = "";
+   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+   for( var i=0; i < 5; i++ ){
+       prefix += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+        return (key+prefix);
+    }
 
 })
 
@@ -225,12 +370,6 @@ appController.factory('latLngFactory', function ($http) {
 
 appController.controller('historyCtrl', function ($scope, $state) {
 
-})
-
-app.controller('tabsContrlr', function ($scope, $state, $log) {
-    $scope.goToHome = function () {
-        $state.go('main.dashboard.home');
-    }
 })
 
 //creates a date object (time)

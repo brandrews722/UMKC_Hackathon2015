@@ -39,3 +39,16 @@
     height: 100%;
     width: 100%;
 }
+
+.errorText
+{
+color:orangered;    
+}
+.hide{
+display:none;
+}
+
+.passwordLabel
+{
+    display:none!important;
+}

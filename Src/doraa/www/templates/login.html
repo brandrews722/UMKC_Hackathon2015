@@ -3,15 +3,52 @@
         <ion-header-bar class="bar-positive">
         <h1 class="title">Doraa</h1>
             
-        <button class="button button-icon" ng-click="redirectToRegistration()">Register
+        <button class="button button-icon" ng-click="goToRegistration()">Register
               <i class="icon ion-person-add"></i>
             </button>   
         </ion-header-bar>
-        <ion-content padding="true" class="has-header">
-          <button class="button button-energized button-block button-shape" ng-click="login()">Login
+        <ion-content padding="true" scroll="false" class="has-header">
+        <form class="list" name="userForm" ng-submit="submitForm(userForm.$valid)" novalidate>
+            <ion-list>
+                  <div class="row" ng-class="{ 'has-error' : userForm.email.$invalid && userForm.email.$error.required && !userForm.email.$pristine }">
+            <div class="col">
+                <label class="item item-input">
+                    <input id="txt_UserName" type="email" name="email1" ng-model="email" placeholder="Username/Email" ng-blur="getUserDetails()">
+                </label>
+                </div>
+                     <div class="col">
+            <p class ="errorText" ng-show="userForm.email1.$invalid && !userForm.email1.$pristine" class="help-block">Enter a valid email.</p>
+            <p class ="errorText" ng-show="userForm.email1.$error.required" class="help-block">Email required.</p>
+                          <p id="err_UserName" class="errorText hide"></p>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                <label class="item item-input passwordLabel" id="lbl_Password">
+                    <input id="txt_Password" type="password" placeholder="Password" required>
+                </label>
+                        </div>
+                    <div class="col">
+                      <p id="err_Password" class ="errorText hide"></p>
+                    </div>
+                    </div>
+            </ion-list>
+            <div class="row">
+                <div class="col">
+          <button id="btn_Login" class="button button-energized button-block button-shape passwordLabel" ng-click="login()">Login
               
             </button>   
-        </ion-content>
+                    </div>
+                <div class="col">
+                <button id="btn_ReLogin" class="button button-energized button-block button-shape passwordLabel" ng-click="reloadLogin()">Login with another username
+              
+            </button>   
+          
+                </div>
+                </div>
+        </form>
+    </ion-content>
+     
   
 </ion-view>
     
