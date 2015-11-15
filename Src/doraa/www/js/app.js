@@ -22,10 +22,7 @@ var app=angular.module('doraa', ['ionic','doraa.controllers'])
 //    }
 //  });
 //})
-app.run(function($scope){
-    $scope.date = new Date();
-})
-        
+
   
   app.config(function($httpProvider,$stateProvider,$urlRouterProvider) {
    // delete $httpProvider.defaults.headers.common["X-Requested-With"]
