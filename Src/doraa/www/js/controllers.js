@@ -139,7 +139,7 @@ appController.factory('weatherFactory', function ($http, latLngFactory) {
                         weatherData = response;
                         console.log("weatherData: ", weatherData);
                         //                        document.getElementById("weatherStart").innerHTML = "";
-                        document.getElementById("weatherStart").innerHTML = "<iframe id='forecast_embed' type='text/html' frameborder='0' height='245' width='100%' src='http://forecast.io/embed/#lat=" + lat1 + "&lon=" + lng1 + "&name=" + locality + "&color=#00aaff&font=Georgia&units=us'> </iframe>";
+                        document.getElementById("weatherStart").innerHTML = "<iframe id='forecast_embed' type='text/html' frameborder='0' height='245' width='50%' src='http://forecast.io/embed/#lat=" + lat1 + "&lon=" + lng1 + "&name=" + locality + "&color=#00aaff&font=Georgia&units=us'> </iframe>";
 
                         return weatherData;
                     })
@@ -232,12 +232,15 @@ app.controller('tabsContrlr', function ($scope, $state, $log) {
         $state.go('main.dashboard.home');
     }
 })
+
+//creates a date object (time)
 appController.controller('timeController', function($scope) {
   $scope.model = {
     time : new Date(),
   };
 })
 
+//formats time
 appController.directive('formattedTime', function ($filter) {
 
   return {
