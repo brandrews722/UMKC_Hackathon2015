@@ -396,3 +396,11 @@ appController.directive('formattedTime', function ($filter) {
     }
   };
 });
+//This controller handles the logic to redirect to the home page.
+app.controller('tabsContrlr',function($scope,$state,$log)
+               {
+$scope.goToHome=function()
+{
+$state.go('main.dashboard.home');
+}
+});

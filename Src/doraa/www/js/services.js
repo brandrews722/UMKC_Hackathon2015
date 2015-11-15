@@ -1,5 +1,5 @@
 var services=angular.module('doraa.userServices', [])
- var userProfileURL="http://localhost:9080/doraaServices/UserServices";
+ var userProfileURL="http://doraaServices.mybluemix.net/UserServices";
 var userEmailService="https://mandrillapp.com/api/1.0/messages/send.json";
 
 //This method would perform the logic of registering and login of the user.
