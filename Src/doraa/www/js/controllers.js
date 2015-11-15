@@ -448,7 +448,6 @@ appController.controller('timeController', function ($scope) {
 //formats time
 appController.directive('formattedTime', function ($filter) {
 
-<<<<<<< Updated upstream
   return {
     require: '?ngModel',
     link: function(scope, elem, attr, ngModel) {
@@ -471,7 +470,7 @@ $scope.goToHome=function()
 $state.go('main.dashboard.home');
 }
 });
-=======
+
     return {
         require: '?ngModel',
         link: function (scope, elem, attr, ngModel) {
@@ -486,4 +485,4 @@ $state.go('main.dashboard.home');
         }
     };
 });
->>>>>>> Stashed changes
+
