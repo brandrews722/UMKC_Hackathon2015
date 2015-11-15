@@ -225,10 +225,32 @@ appController.factory('latLngFactory', function ($http) {
 
 appController.controller('historyCtrl', function ($scope, $state) {
 
-});
+})
 
 app.controller('tabsContrlr', function ($scope, $state, $log) {
     $scope.goToHome = function () {
         $state.go('main.dashboard.home');
     }
+})
+appController.controller('timeController', function($scope) {
+  $scope.model = {
+    time : new Date(),
+  };
+})
+
+appController.directive('formattedTime', function ($filter) {
+
+  return {
+    require: '?ngModel',
+    link: function(scope, elem, attr, ngModel) {
+        if( !ngModel )
+            return;
+        if( attr.type !== 'time' )
+            return;
+                
+        ngModel.$formatters.unshift(function(value) {
+            return value.replace(/:[0-9]+.[0-9]+$/, '');
+        });
+    }
+  };
 });

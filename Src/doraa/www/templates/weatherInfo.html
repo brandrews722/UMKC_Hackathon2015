@@ -29,7 +29,7 @@
                 <div class="col">
                     <label class="item item-input" name="txt_time">
                         <i class="icon ion-search placeholder-icon"></i>
-                        <input id="txt_time" type="time" ng-model="data.time" placeholder="Time">
+                        <input id="txt_time" ng-controller="timeController" type="time" ng-model="model.time" placeholder="Time" formatted-time>
                     </label>
                 </div>
             </div>
