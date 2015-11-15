@@ -10,7 +10,12 @@ appController.controller('signUpController', function ($scope, $state) {
 
 })
 
-appController.controller('weatherCtrl', function ($scope, $state, $http, weatherFactory, latLngFactory) {
+appController.controller('weatherCtrl', function ($scope, $state, $http, $filter, weatherFactory, latLngFactory) {
+    $scope.data = {};
+    $scope.data.date = new Date(); //sets current date
+    $scope.data.time = new Date(); //sets current time MM:DD:A
+    
+    
     var sourcePlace;
     var destinationPlace;
     var autocompleteForSource;
