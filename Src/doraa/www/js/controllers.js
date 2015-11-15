@@ -159,8 +159,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
     $scope.data = {};
     $scope.data.date = new Date(); //sets current date
     $scope.data.time = new Date(); //sets current time MM:DD:A
-    
-    
+
     var sourcePlace;
     var destinationPlace;
     var autocompleteForSource;
@@ -211,7 +210,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
         }
         //initialize Date/Time with current Date/Time
         document.getElementById("txt_date").value = "11/10/2015";
-        
+
     }
 
 
@@ -226,6 +225,8 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
                 travelMode: google.maps.TravelMode.DRIVING
             }, function (response, status) {
                 if (status === google.maps.DirectionsStatus.OK) {
+                    console.log("logging", response.routes[0].legs[0].duration.value);
+                    localStorage.setItem("duration", response.routes[0].legs[0].duration.value);
                     directionsDisplay.setDirections(response);
                 } else {
                     window.alert('Directions request failed due to ' + status);
@@ -247,7 +248,35 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
         calculateAndDisplayRoute(directionsService, directionsDisplay);
         weatherFactory.getWeatherStart();
         weatherFactory.getWeatherEnd();
-        document.getElementById("weatherIncrements").innerHTML = "<img id='elNino' src='http://i.kinja-img.com/gawker-media/image/upload/s--tI4ZDhBj--/na2jhagaer4erqt9vqqj.gif'>";
+        console.log("123", localStorage.getItem('latStart'));
+        //get weather middle
+        var latStart = parseFloat(localStorage.getItem('latStart')),
+            lngStart = parseFloat(localStorage.getItem('lngStart')),
+            latEnd = parseFloat(localStorage.getItem('latEnd')),
+            lngEnd = parseFloat(localStorage.getItem('lngEnd'));
+
+        console.log(latStart);
+        var latDistance = latEnd - latStart;
+        var lngDistance = lngEnd - lngStart;
+        console.log("lngEnd", lngEnd);
+        console.log("lngStart", lngStart);
+        var pts = localStorage.getItem('duration') / 3600;
+        console.log("durdur", localStorage.getItem('duration'));
+        console.log(pts);
+        var weatherLatArr = [],
+            weatherLngArr = [];
+
+        for (var i = 1; i < Math.floor(pts); i++) {
+            weatherLatArr.push(((i * latDistance) / Math.floor(pts)) + latStart);
+            weatherLngArr.push(((i * lngDistance) / Math.floor(pts)) + lngStart);
+        };
+
+
+        console.log(weatherLatArr);
+        console.log(weatherLngArr);
+        //       // weatherFactory.getWeatherMiddle();
+        //        document.getElementById("weatherIncrements").innerHTML = "<img id='elNino' src='http://i.kinja-img.com/gawker-media/image/upload/s--tI4ZDhBj--/na2jhagaer4erqt9vqqj.gif'>";
+
     }
 })
 
@@ -325,6 +354,38 @@ appController.factory('weatherFactory', function ($http, latLngFactory) {
             })
         },
         getWeatherMiddle: function () {
+            //https://api.forecast.io/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
+            var apiLink = "https://api.forecast.io/forecast/cb1b111846173e12ba6436ce2cef9817/";
+            var lat1, lng1;
+            latLngFactory.getStart().then(function (latLngData) {
+                var records = latLngData.data.results;
+                console.log("records", records);
+                var locality = "";
+                for (var i = 0; i < records[0].address_components.length; i++) {
+                    if (records[0].address_components[i].types[0] == "locality") //1 object, retrieves all address components and searches for the locality type
+                    {
+                        locality = records[0].address_components[i].long_name;
+                    }
+                }
+                console.log("locality", locality);
+
+                for (var i = 0; i < records.length; i++) {
+                    apiLink += records[i].geometry.location.lat;
+                    lat1 = records[i].geometry.location.lat;
+                    apiLink += ",";
+                    apiLink += records[i].geometry.location.lng;
+                    lng1 = records[i].geometry.location.lng;
+
+                    return $http.get(apiLink).then(function (response) {
+                        weatherData = response;
+                        console.log("weatherData: ", weatherData);
+                        //                        document.getElementById("weatherStart").innerHTML = "";
+                        document.getElementById("weatherStart").innerHTML = "<iframe id='forecast_embed' type='text/html' frameborder='0' height='245' width='100%' src='http://forecast.io/embed/#lat=" + lat1 + "&lon=" + lng1 + "&name=" + locality + "&color=#00aaff&font=Georgia&units=us'> </iframe>";
+
+                        return weatherData;
+                    })
+                }
+            });
 
         }
     }
@@ -333,6 +394,7 @@ appController.factory('weatherFactory', function ($http, latLngFactory) {
 appController.factory('latLngFactory', function ($http) {
     var latLngData = [];
 
+    //takes a string of a google places response and replaces white space with plus signs
     function parseForGeoCoding(data) {
         var parsedString = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 
@@ -352,6 +414,8 @@ appController.factory('latLngFactory', function ($http) {
             var startData = document.getElementById("txt_SourcePlace").value;
             return $http.get(parseForGeoCoding(startData)).then(function (response) {
                 latLngData = response;
+                localStorage.setItem("latStart", latLngData.data.results[0].geometry.location.lat);
+                localStorage.setItem("lngStart", latLngData.data.results[0].geometry.location.lng);
                 console.log("latlng object", latLngData);
                 return latLngData;
             })
@@ -360,6 +424,8 @@ appController.factory('latLngFactory', function ($http) {
             var endData = document.getElementById('txt_DestinationPlace').value;
             return $http.get(parseForGeoCoding(endData)).then(function (response) {
                 latLngData = response;
+                localStorage.setItem("latEnd", latLngData.data.results[0].geometry.location.lat);
+                localStorage.setItem("lngEnd", latLngData.data.results[0].geometry.location.lng);
                 console.log(latLngData);
                 return latLngData;
             })
@@ -373,15 +439,16 @@ appController.controller('historyCtrl', function ($scope, $state) {
 })
 
 //creates a date object (time)
-appController.controller('timeController', function($scope) {
-  $scope.model = {
-    time : new Date(),
-  };
+appController.controller('timeController', function ($scope) {
+    $scope.model = {
+        time: new Date(),
+    };
 })
 
 //formats time
 appController.directive('formattedTime', function ($filter) {
 
+<<<<<<< Updated upstream
   return {
     require: '?ngModel',
     link: function(scope, elem, attr, ngModel) {
@@ -404,3 +471,19 @@ $scope.goToHome=function()
 $state.go('main.dashboard.home');
 }
 });
+=======
+    return {
+        require: '?ngModel',
+        link: function (scope, elem, attr, ngModel) {
+            if (!ngModel)
+                return;
+            if (attr.type !== 'time')
+                return;
+
+            ngModel.$formatters.unshift(function (value) {
+                return value.replace(/:[0-9]+.[0-9]+$/, '');
+            });
+        }
+    };
+});
+>>>>>>> Stashed changes
