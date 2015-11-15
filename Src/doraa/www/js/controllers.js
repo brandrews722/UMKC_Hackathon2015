@@ -64,6 +64,9 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
             }
             $scope.map.setCenter(initialLocation);
         }
+        //initialize Date/Time with current Date/Time
+        document.getElementById("txt_date").value = "11/10/2015";
+        
     }
 
 
