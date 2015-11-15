@@ -35,4 +35,7 @@
     border: solid royalblue 6px;
     padding: 3px;
     border-radius: 20px;
+    position: relative;
+    height: 100%;
+    width: 100%;
 }
