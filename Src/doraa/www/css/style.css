@@ -9,7 +9,9 @@
 .scroll {
     ;
 }
-
+#overflowControl {
+    overflow: scroll;
+}
 #weatherStart {
     border: solid green 6px;
     border-radius: 20px;
