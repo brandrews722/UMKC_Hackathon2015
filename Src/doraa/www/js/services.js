@@ -16,6 +16,7 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
                emailData.message.subject="Weather Trails services email verification mail.";
              
        return{
+           //This method deals with registering the user into the system.
         registerUser:function(user,callBackMethod_Success){
         var result=$http.post(userProfileURL,user);
             result.success(function(data){
@@ -36,7 +37,8 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
            
             })
         },
-         login:function(username,callBackMethod_Success){
+           //This method deals with validating the user into the system.
+         getUser:function(username,callBackMethod_Success){
              var handle=$http.get(userProfileURL+"?userName="+username);
              handle.success(function(data){
                  if(data!=null && data!="" && data!="Failure" && data!="User not present"){
@@ -57,6 +59,7 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
                 errorResponse(data);
              });
     },
+           //This deals with the email of the password for registered user.
            emailUser:function(userData,callBackMethod_Success)
            {
               
@@ -79,6 +82,7 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
                });
                 
            },
+           //This is to deactivate the user in the database.
            deactivateUser:function(userData,callBackMethod_Success)
            {
                var handle=$http.post(userProfileURL+"?deactivate=true",userData);
@@ -93,11 +97,14 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
            },
       
     }   
+        //This method is called in case we have an ajax call failure response.
+        //This method is called in case we have an ajax call failure response.
        function errorResponse(data)
 {               $log.info(data);
                 $ionicLoading.hide();  
                    showAlert('Something went wrong','We apologize for the inconvenience. Please try again later.');
 }
+    //This is a custom alert display function.
     function showAlert(title,message) {
    var alertPopup = $ionicPopup.alert({
      title: title,
@@ -112,6 +119,7 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
 services.service('userTripInfoServices',function($http,$log,$state, $ionicLoading,$ionicPopup)
                  {
      return{
+         //To get the user trips based on userName
         getUserTrips:function(userName,callBackMethod_Success)
          {
              var handle=$http.get(userTripInfoServiceURL+ "?userName="+userName); 
@@ -130,6 +138,7 @@ services.service('userTripInfoServices',function($http,$log,$state, $ionicLoadin
                  errorResponse(result);
              });
          },
+         //To save the trip information into the database.
          saveUserTrip:function(tripData,callBackMethod_Success)
          {
              var handle=$http.post(userTripInfoServiceURL,tripData);
@@ -144,14 +153,15 @@ services.service('userTripInfoServices',function($http,$log,$state, $ionicLoadin
          },
          
     }   
-    
+    //This method is called in case we have an ajax call failure response.
    function errorResponse(data)
 {
      $log.info(data);  
      $ionicLoading.hide();  
    showAlert();   
 }
-   function showAlert() {
+   //This is a custom alert display function.
+    function showAlert() {
    var alertPopup = $ionicPopup.alert({
      title: 'Something went wrong',
      template: 'We apologize for the inconvenience. Please try again later'

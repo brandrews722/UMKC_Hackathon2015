@@ -91,6 +91,15 @@ url:'/register',
         }
       }
     })
+  .state('main.dashboard.frequentUsers',{
+  url:'/frequentUsers',
+      views:{
+          'FrequentUsers':{
+          templateUrl:'templates/frequentUsers.html',
+              controller:'frequentUserCntrlr'
+          }
+      }
+  })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/about');

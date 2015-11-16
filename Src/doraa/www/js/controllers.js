@@ -19,7 +19,7 @@ $scope.getUserDetails =function()
           $ionicLoading.show({
 				  template: 'Please wait...'
 				});
-        appUserServices.login($scope.userName,onUserNameFound_Success);
+        appUserServices.getUser($scope.userName,onUserNameFound_Success);
     }
 }
     $scope.login = function()
@@ -133,6 +133,7 @@ $scope.reloadLogin =function()
        }
         $ionicLoading.hide();
     }
+   
 })
 //This is the controller for the registration page functionality.
 appController.controller('signUpController', function($scope,$state,$http,appUserServices,$ionicLoading,$ionicPopup) {
@@ -290,6 +291,14 @@ $scope.saveTripInfo =function()
         showAlert("Session expired","Please try to login and try again");
     }
 }
+ $scope.rememberUser=function()
+    {
+     //This would store the user credentials till he logs out.   
+     if(userData!=null)
+        {
+            localStorage.setItem("userData",JSON.stringify(userData));
+        }
+    }
 function showAlert(title,message) {
    var alertPopup = $ionicPopup.alert({
      title: title,
@@ -409,7 +418,9 @@ function onTripInfoSaved_Success(result)
     }
  $scope.logOut=function()
     {
-     userData=null;   
+     userData=null; 
+     if(localStorage.getItem("userData")!=undefined)
+     localStorage.getItem("userData")=null;
      $state.go('about');
     }
 })
@@ -514,14 +525,11 @@ appController.factory('weatherFactory', function ($http, latLngFactory,$ionicLoa
             apiLink += weatherDate;
 
             return $http.get(apiLink).then(function (response) {
-                //weatherData.push(response);
                 dictResponse = {
                     "key": hour,
                     "value": response,
                     "date": weatherDate
                 };
-                //                document.getElementById("weatherIncrements").innerHTML += "<div class='row'><div class='col'>" + weatherDate + "</div><div class='col'>" + + weatherData.data.currently.apparentTemperature + "</div></div>";
-                //*/
                 return dictResponse;
             })
 
@@ -584,6 +592,9 @@ if(($scope.userTrips==undefined || $scope.userTrips==null) && userData!=undefine
 }
     $scope.logOut=function()
     {
+         if(localStorage.getItem("userData")!=undefined)
+        localStorage.getItem("userData")=null;
+        userData=null;
         $state.go('about');
     }
     function onUserTrips_Success(data)
@@ -635,10 +646,20 @@ $scope.goToHistory = function()
     $state.go('main.dashboard.history');
     $window.location.reload(true);
 }
-
+$scope.goToFrequentUsers =function()
+{
+    $state.go('main.dashboard.frequentUsers');
+    $window.location.reload(true);
+}
 })
-app.controller('aboutPageCntrlr', function($scope,$log,$state)
-               {
+app.controller('aboutPageCntrlr', function($scope,$log,$state,$ionicLoading)
+{
+    //This code would ensure that the user if still active would be redirected to the weather page.
+    if(localStorage.getItem("userData")!=undefined && localStorage.getItem("userData")!=null)
+    {
+        userData=localStorage.getItem("userData");
+        $state.go('main.dashboard.weather');
+    }
     $scope.goToRegistration = function()
     {
         $state.go('register');
@@ -647,4 +668,22 @@ app.controller('aboutPageCntrlr', function($scope,$log,$state)
     {
         $state.go('login')
     };
-});
+})
+app.controller('frequentUserCntrlr',function($scope,$log,$state,appUserServices,$window,$ionicLoading)
+               {
+if($scope.frequentUsers==undefined || $scope.frequentUsers==null)
+{
+      $ionicLoading.show({
+				  template: 'Please wait...'
+				});
+    appUserServices.getUser("",onFrequentUsers_Success);
+}
+    function onFrequentUsers_Success(result)
+    {
+        if(result!=null)
+        {
+            $scope.frequentUsers = result;
+        }
+        $ionicLoading.hide();
+    }
+})
