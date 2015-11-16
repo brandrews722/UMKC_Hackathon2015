@@ -356,6 +356,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
 
             });
         };
+        $ionicLoading.hide();
 
     }
 
@@ -589,29 +590,29 @@ appController.directive('formattedTime', function ($filter) {
     };
 });
 //This controller handles the logic to redirect to the home page.
-app.controller('tabsContrlr',function($scope,$state,$log)
+app.controller('tabsContrlr',function($scope,$state,$log,$window )
                {
 $scope.goToWeatherInfo=function()
 {
 $state.go('main.dashboard.weather');
-    $window.location.reload(true);
+
 }
 $scope.goToHistory = function()
 {
     $state.go('main.dashboard.history');
-    $window.location.reload(true);
+  
 }
 $scope.goToFrequentUsers =function()
 {
     $state.go('main.dashboard.frequentUsers');
-    $window.location.reload(true);
+   
 }
 })
 //This controller deals with the about page.
 app.controller('aboutPageCntrlr', function($scope,$log,$state,$ionicLoading)
 {
     //This code would ensure that the user if still active would be redirected to the weather page.
-    if(localStorage.getItem("userData")!=undefined && localStorage.getItem("userData")!=null && localStorage.getItem("userData")!="null")
+    if(localStorage!=undefined && localStorage.getItem("userData")!=undefined && localStorage.getItem("userData")!=null && localStorage.getItem("userData")!="null")
     {
         var userInfo = localStorage.getItem("userData");//JSON.stringify(eval("(" + localStorage.getItem("userData") + ")"));
         userData= JSON.parse(userInfo);
@@ -636,6 +637,10 @@ if($scope.frequentUsers==undefined || $scope.frequentUsers==null)
 				});
     appUserServices.getUser("",onFrequentUsers_Success);
 }
+    $scope.goToHome=function()
+    {
+        $state.go('about');
+    }
     function onFrequentUsers_Success(result)
     {
         if(result!=null)
