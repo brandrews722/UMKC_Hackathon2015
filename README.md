@@ -83,4 +83,4 @@ Technologies Used
 •	AngularJS
 •	Java
 
-
+*Note - our application requires the Chrome plug-in: Cors.
