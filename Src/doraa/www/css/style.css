@@ -28,6 +28,20 @@
     border: solid royalblue 6px;
     border-radius: 20px;
     background-color: lightblue;
+    overflow-y: scroll;
+    font-family: Georgia;
+    color: #333;
+    height: 273px;
+}
+
+#weatherRows{
+    border: solid royalblue 3px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-family: Georgia;
+    text-align: center;
+    color: #333;
+    margin-top: 7px;
 }
 
 #elNino{
@@ -51,4 +65,15 @@ display:none;
 .passwordLabel
 {
     display:none!important;
+}
+
+.travelWeather{
+    padding-top: 8px;
+    padding-left: 10px;
+    font-weight: bold;
+    padding-bottom: 5px;
+    font-size: 18px;
+    border-bottom: solid black 2px;
+    font-family: Georgia;
+    
 }

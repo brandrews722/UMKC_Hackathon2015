@@ -1,156 +1,139 @@
-var appController = angular.module('doraa.controllers', ['ionic','doraa.userServices'])
+var appController = angular.module('doraa.controllers', ['ionic', 'doraa.userServices'])
 
 //This is the controller for the login page functionality.
-appController.controller('loginCtrl', function($scope,$state,appUserServices,$window) {
-    var loginFailedCount=0;
-     $scope.userName=""
-     $scope.password="";
-    var userData;
-    
-$scope.getUserDetails =function()
-{
-    
-   $scope.userName = document.getElementById('txt_UserName').value; 
-     if($scope.userName!=null && $scope.userName!="" && loginFailedCount==0)
-    {
-         userData=null;
-        appUserServices.login($scope.userName,onUserNameFound_Success);
-    }
-}
-    $scope.login = function()
-{   
-  
-     $scope.password = document.getElementById('txt_Password').value;
-   if($scope.password!=null && userData!=null && userData.password!=null)
-   {
-          loginFailedCount++;
-       if(loginFailedCount<3){
-       if(userData.password != $scope.password)
-       {
-         
-           document.getElementById('err_Password').innerHTML="You have " + (3-loginFailedCount) + " attempts left. "
-           if(document.getElementById('err_Password').classList.contains('hide')){
-           document.getElementById('err_Password').classList.remove('hide');
-       }
-          
-       }
-       else{
-        loginFailedCount=0;
-       alert('Welcome ' + userData.name);
-       $state.go('main.dashboard.weather');
-       }
-       }
-       else
-       {
-           appUserServices.deactivateUser(userData,onUserDeactivated_Success);
-     
-       }
-   }
-        else
-        {
-            alert("There was some issue with login");
+appController.controller('loginCtrl', function ($scope, $state, appUserServices, $window) {
+        var loginFailedCount = 0;
+        $scope.userName = ""
+        $scope.password = "";
+        var userData;
+
+
+
+        $scope.getUserDetails = function () {
+
+            $scope.userName = document.getElementById('txt_UserName').value;
+            if ($scope.userName != null && $scope.userName != "" && loginFailedCount == 0) {
+                userData = null;
+                appUserServices.login($scope.userName, onUserNameFound_Success);
+            }
         }
- 
-    
-}
-$scope.goToRegistration =function()
-{
-    $state.go('register')
-}
-$scope.reloadLogin =function()
-{
-   $window.location.reload(true);
-}
-   function onUserNameFound_Success(data)
-    {
-       
-        if(data!=null)
-        {
-        loginFailedCount=0;
-            userData = data;
-           
-            if(userData.userName==$scope.userName)
-            {
-                document.getElementById('txt_UserName').disabled=true;
-                if(document.getElementById('lbl_Password').classList.contains('passwordLabel')){
-               document.getElementById('lbl_Password').classList.remove('passwordLabel');
-                document.getElementById('btn_Login').classList.remove('passwordLabel');
-                    document.getElementById('btn_ReLogin').classList.remove('passwordLabel');
-                    
+        $scope.login = function () {
+
+            $scope.password = document.getElementById('txt_Password').value;
+            if ($scope.password != null && userData != null && userData.password != null) {
+                loginFailedCount++;
+                if (loginFailedCount < 3) {
+                    if (userData.password != $scope.password) {
+
+                        document.getElementById('err_Password').innerHTML = "You have " + (3 - loginFailedCount) + " attempts left. "
+                        if (document.getElementById('err_Password').classList.contains('hide')) {
+                            document.getElementById('err_Password').classList.remove('hide');
+                        }
+
+                    } else {
+                        loginFailedCount = 0;
+                        alert('Welcome ' + userData.name);
+                        $state.go('main.dashboard.weather');
+                    }
+                } else {
+                    appUserServices.deactivateUser(userData, onUserDeactivated_Success);
+
                 }
-                document.getElementById('err_UserName').classList.add('hide');
-                loginFailedCount=0;
+            } else {
+                alert("There was some issue with login");
             }
-            else
-            {
-                      document.getElementById('err_UserName').innerHTML="You do not have an account or your acccount might not be active.";
-                     document.getElementById('err_UserName').classes.remove('hide');
-            }
-                
+
+
         }
-        
-    }
-    function onUserDeactivated_Success(result)
-    {
-              document.getElementById('err_Password').innerHTML= "Your account has been deactivated";
-            if(document.getElementById('err_Password').classList.contains('hide')){
-           document.getElementById('err_Password').classList.remove('hide');
-                
-       }
-    }
-})
-//This is the controller for the registration page functionality.
-appController.controller('signUpController', function($scope,$state,$http,appUserServices) {
-    document.getElementById('txt_Name').value ="";
-    document.getElementById('txt_userName').value ="";
+        $scope.goToRegistration = function () {
+            $state.go('register')
+        }
+        $scope.reloadLogin = function () {
+            $window.location.reload(true);
+        }
 
- //Redirect to the login page after successfull registration.
-    $scope.goToLoginPage =function()
- {
-     $state.go('login');
- }
- //Submit the user registration data to the database.
- $scope.submitForm = function(isValid) {
-$scope.userToBeAdded={};
-		// check to make sure the form is completely valid
-		if (isValid) { 
-           $scope.userToBeAdded.name= document.getElementById('txt_Name').value;
-            $scope.userToBeAdded.userName=document.getElementById('txt_userName').value;
-            $scope.userToBeAdded.password =generatePassword($scope.userToBeAdded.name);
-            $scope.userToBeAdded.uerLoginCount=0;
-            $scope.userToBeAdded.status="Active";
-          
-            if($scope.userToBeAdded!=null)
-            {
-                //appUserServices.emailUser($scope.userToBeAdded,onUserRegistration_Success);
-                appUserServices.registerUser($scope.userToBeAdded,onUserRegistration_Success);
+        function onUserNameFound_Success(data) {
+
+            if (data != null) {
+                loginFailedCount = 0;
+                userData = data;
+
+                if (userData.userName == $scope.userName) {
+                    document.getElementById('txt_UserName').disabled = true;
+                    if (document.getElementById('lbl_Password').classList.contains('passwordLabel')) {
+                        document.getElementById('lbl_Password').classList.remove('passwordLabel');
+                        document.getElementById('btn_Login').classList.remove('passwordLabel');
+                        document.getElementById('btn_ReLogin').classList.remove('passwordLabel');
+
+                    }
+                    document.getElementById('err_UserName').classList.add('hide');
+                    loginFailedCount = 0;
+                } else {
+                    document.getElementById('err_UserName').innerHTML = "You do not have an account or your acccount might not be active.";
+                    document.getElementById('err_UserName').classes.remove('hide');
+                }
+
             }
-	        
-		}
 
-	};
-    function onUserRegistration_Success(response,user)
-    {
-       if(response!=null)
-       {
-           appUserServices.emailUser(user,onEmailSend_Success);    
-           
-       }
+        }
+
+        function onUserDeactivated_Success(result) {
+            document.getElementById('err_Password').innerHTML = "Your account has been deactivated";
+            if (document.getElementById('err_Password').classList.contains('hide')) {
+                document.getElementById('err_Password').classList.remove('hide');
+
+            }
+        }
+    })
+    //This is the controller for the registration page functionality.
+appController.controller('signUpController', function ($scope, $state, $http, appUserServices) {
+    document.getElementById('txt_Name').value = "";
+    document.getElementById('txt_userName').value = "";
+
+    //Redirect to the login page after successfull registration.
+    $scope.goToLoginPage = function () {
+            $state.go('login');
+        }
+        //Submit the user registration data to the database.
+    $scope.submitForm = function (isValid) {
+        $scope.userToBeAdded = {};
+        // check to make sure the form is completely valid
+        if (isValid) {
+            $scope.userToBeAdded.name = document.getElementById('txt_Name').value;
+            $scope.userToBeAdded.userName = document.getElementById('txt_userName').value;
+            $scope.userToBeAdded.password = generatePassword($scope.userToBeAdded.name);
+            $scope.userToBeAdded.uerLoginCount = 0;
+            $scope.userToBeAdded.status = "Active";
+
+            if ($scope.userToBeAdded != null) {
+                //appUserServices.emailUser($scope.userToBeAdded,onUserRegistration_Success);
+                appUserServices.registerUser($scope.userToBeAdded, onUserRegistration_Success);
+            }
+
+        }
+
+    };
+
+    function onUserRegistration_Success(response, user) {
+        if (response != null) {
+            appUserServices.emailUser(user, onEmailSend_Success);
+
+        }
     }
-    function onEmailSend_Success(response)
-    {
-        alert("Thank you " +  $scope.userToBeAdded.name +". You would receive your password to " +  $scope.userToBeAdded.userName );
-                $state.go('login');  
+
+    function onEmailSend_Success(response) {
+        alert("Thank you " + $scope.userToBeAdded.name + ". You would receive your password to " + $scope.userToBeAdded.userName);
+        $state.go('login');
     }
-    function generatePassword(key)
-    {
+
+    function generatePassword(key) {
         var prefix = "";
-   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-   for( var i=0; i < 5; i++ ){
-       prefix += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-        return (key+prefix);
+        for (var i = 0; i < 5; i++) {
+            prefix += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return (key + prefix);
     }
 
 })
@@ -158,7 +141,13 @@ $scope.userToBeAdded={};
 appController.controller('weatherCtrl', function ($scope, $state, $http, $filter, weatherFactory, latLngFactory) {
     $scope.data = {};
     $scope.data.date = new Date(); //sets current date
-    $scope.data.time = new Date(); //sets current time MM:DD:A
+    console.log("dater", $scope.data.date.toUTCString());
+
+
+        var middleResponseArr = [];
+        var middleResponseArrSumm = [];
+        var middleResponseArrDate = [];
+
 
     var sourcePlace;
     var destinationPlace;
@@ -209,7 +198,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
             $scope.map.setCenter(initialLocation);
         }
         //initialize Date/Time with current Date/Time
-        document.getElementById("txt_date").value = "11/10/2015";
+        //        document.getElementById("txt_date").value = "11/10/2015";
 
     }
 
@@ -264,26 +253,63 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
         console.log("durdur", localStorage.getItem('duration'));
         console.log(pts);
         var weatherLatArr = [],
-            weatherLngArr = [];
+            weatherLngArr = []
+        ;
 
         for (var i = 1; i < Math.floor(pts); i++) {
             weatherLatArr.push(((i * latDistance) / Math.floor(pts)) + latStart);
             weatherLngArr.push(((i * lngDistance) / Math.floor(pts)) + lngStart);
+            weatherFactory.getWeatherMiddle((((i * latDistance) / Math.floor(pts)) + latStart), (((i * lngDistance) / Math.floor(pts)) + lngStart), i).then(function (response) {
+                document.getElementById("weatherIncrements").innerHTML = "<div id='row' class='travelWeather'>Travel Weather</div>";
+
+                consolidateArr(response.key, response.value.data.currently.temperature, response.value.data.currently.summary, response.date);
+                console.log("--------------", response);
+                console.log("%%%%%%%%%", middleResponseArr);
+               
+            });
         };
+        console.log("***************", middleResponseArr);
 
-
+        placeinUI();
         console.log(weatherLatArr);
         console.log(weatherLngArr);
         //       // weatherFactory.getWeatherMiddle();
         //        document.getElementById("weatherIncrements").innerHTML = "<img id='elNino' src='http://i.kinja-img.com/gawker-media/image/upload/s--tI4ZDhBj--/na2jhagaer4erqt9vqqj.gif'>";
 
+
+
+    }
+
+    function consolidateArr(key, temp, summ, date) {
+
+        middleResponseArr[key - 1] = temp;
+        middleResponseArrSumm[key - 1] = summ;
+        middleResponseArrDate[key - 1] = date;
+         console.log("ggsfhsfhs" + middleResponseArr);
+        console.log("ggsfhsfhs" + middleResponseArrSumm);
+        console.log("ggsfhsfhs" + middleResponseArrDate);
+        
+        for(var i=0; i<middleResponseArr.length; i++){
+            var time = parseInt(i)+1;
+            document.getElementById("weatherIncrements").innerHTML += "<div class='row' id='weatherRows'><div class='col'>Hour " + time + "</div><div class='col'>" + middleResponseArr[i]+ "&deg;</div><div class='col'>" + middleResponseArrSumm[i] + "</div></div>";
+        }
+        
+        
+    }
+
+    function placeinUI() {
+        console.log("hi");
+        console.log("ggsfhsfhs" + middleResponseArr);
+        console.log("ggsfhsfhs" + middleResponseArrSumm);
+        console.log("ggsfhsfhs" + middleResponseArrDate);
     }
 })
 
 
 appController.factory('weatherFactory', function ($http, latLngFactory) {
     var weatherData = [];
-
+    var dictResponse = [];
+    var dictDate = [];
 
 
     return {
@@ -353,42 +379,48 @@ appController.factory('weatherFactory', function ($http, latLngFactory) {
                 }
             })
         },
-        getWeatherMiddle: function () {
+        getWeatherMiddle: function (latVal, lngVal, hour) {
             //https://api.forecast.io/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
+            console.log("latVal", latVal);
+
             var apiLink = "https://api.forecast.io/forecast/cb1b111846173e12ba6436ce2cef9817/";
-            var lat1, lng1;
-            latLngFactory.getStart().then(function (latLngData) {
-                var records = latLngData.data.results;
-                console.log("records", records);
-                var locality = "";
-                for (var i = 0; i < records[0].address_components.length; i++) {
-                    if (records[0].address_components[i].types[0] == "locality") //1 object, retrieves all address components and searches for the locality type
-                    {
-                        locality = records[0].address_components[i].long_name;
-                    }
-                }
-                console.log("locality", locality);
+            apiLink += latVal;
+            apiLink += ",";
+            apiLink += lngVal;
+            apiLink += ",";
 
-                for (var i = 0; i < records.length; i++) {
-                    apiLink += records[i].geometry.location.lat;
-                    lat1 = records[i].geometry.location.lat;
-                    apiLink += ",";
-                    apiLink += records[i].geometry.location.lng;
-                    lng1 = records[i].geometry.location.lng;
+            var curTime = document.getElementById("txt_time").value;
+            var curDate = document.getElementById("txt_date").value;
+            console.log("curTime", curTime);
+            console.log("curDate", curDate);
+            var splitTime = curTime.split(":");
+            var splitDate = curDate.split("-");
+            var weatherHour = 0;
+            console.log(hour);
+            weatherHour = parseInt(splitTime[0]) + parseInt(hour);
+            var weatherDate = "";
+            weatherDate = String(splitDate[0]) + "-" + String(splitDate[1]) + "-" + String(splitDate[2]) + "T" + String(weatherHour) + ":" + String(splitTime[1]) + ":00-0400";
+            console.log(weatherDate);
 
-                    return $http.get(apiLink).then(function (response) {
-                        weatherData = response;
-                        console.log("weatherData: ", weatherData);
-                        //                        document.getElementById("weatherStart").innerHTML = "";
-                        document.getElementById("weatherStart").innerHTML = "<iframe id='forecast_embed' type='text/html' frameborder='0' height='245' width='100%' src='http://forecast.io/embed/#lat=" + lat1 + "&lon=" + lng1 + "&name=" + locality + "&color=#00aaff&font=Georgia&units=us'> </iframe>";
+            apiLink += weatherDate;
 
-                        return weatherData;
-                    })
-                }
-            });
+            return $http.get(apiLink).then(function (response) {
+                //weatherData.push(response);
+                dictResponse = {
+                    "key": hour,
+                    "value": response,
+                    "date": weatherDate
+                };
+                //                document.getElementById("weatherIncrements").innerHTML += "<div class='row'><div class='col'>" + weatherDate + "</div><div class='col'>" + + weatherData.data.currently.apparentTemperature + "</div></div>";
+                //*/
+                return dictResponse;
+            })
+
 
         }
     }
+
+
 })
 
 appController.factory('latLngFactory', function ($http) {
@@ -448,29 +480,6 @@ appController.controller('timeController', function ($scope) {
 //formats time
 appController.directive('formattedTime', function ($filter) {
 
-  return {
-    require: '?ngModel',
-    link: function(scope, elem, attr, ngModel) {
-        if( !ngModel )
-            return;
-        if( attr.type !== 'time' )
-            return;
-                
-        ngModel.$formatters.unshift(function(value) {
-            return value.replace(/:[0-9]+.[0-9]+$/, '');
-        });
-    }
-  };
-});
-//This controller handles the logic to redirect to the home page.
-app.controller('tabsContrlr',function($scope,$state,$log)
-               {
-$scope.goToHome=function()
-{
-$state.go('main.dashboard.home');
-}
-});
-
     return {
         require: '?ngModel',
         link: function (scope, elem, attr, ngModel) {
@@ -485,4 +494,9 @@ $state.go('main.dashboard.home');
         }
     };
 });
-
+//This controller handles the logic to redirect to the home page.
+app.controller('tabsContrlr', function ($scope, $state, $log) {
+    $scope.goToHome = function () {
+        $state.go('main.dashboard.home');
+    }
+});
