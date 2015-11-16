@@ -7,7 +7,7 @@
               <i class="icon ion-person-add"></i>
             </button>   
         </ion-header-bar>
-        <ion-content padding="true" scroll="false" class="has-header">
+        <ion-content padding="true" scroll="false" class="has-header" id="loginImg">
         <form class="list" name="userForm" ng-submit="submitForm(userForm.$valid)" novalidate>
             <ion-list>
                   <div class="row" ng-class="{ 'has-error' : userForm.email.$invalid && userForm.email.$error.required && !userForm.email.$pristine }">
