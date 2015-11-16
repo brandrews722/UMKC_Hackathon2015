@@ -291,6 +291,7 @@ $scope.saveTripInfo =function()
         showAlert("Session expired","Please try to login and try again");
     }
 }
+//This function would save the user data for keeping him active.
  $scope.rememberUser=function()
     {
      //This would store the user credentials till he logs out.   
@@ -299,6 +300,7 @@ $scope.saveTripInfo =function()
             localStorage.setItem("userData",JSON.stringify(userData));
         }
     }
+ //This is a custom alert pop up display function.
 function showAlert(title,message) {
    var alertPopup = $ionicPopup.alert({
      title: title,
@@ -416,11 +418,12 @@ function onTripInfoSaved_Success(result)
         console.log("ggsfhsfhs" + middleResponseArrSumm);
         console.log("ggsfhsfhs" + middleResponseArrDate);
     }
+    //This function logs out the user from application.
  $scope.logOut=function()
     {
      userData=null; 
      if(localStorage.getItem("userData")!=undefined)
-     localStorage.getItem("userData")=null;
+     localStorage.setItem("userData",null);
      $state.go('about');
     }
 })
@@ -582,7 +585,7 @@ appController.factory('latLngFactory', function ($http,$ionicLoading) {
     }
 })
 
-
+//This is the controller that deals with the trip history of the user.
 appController.controller('historyCtrl', function ($scope, $state,userTripInfoServices,$ionicLoading) {
 if(($scope.userTrips==undefined || $scope.userTrips==null) && userData!=undefined && userData!=null && userData.userName!=undefined && userData.userName!=null){
     $ionicLoading.show({
@@ -590,10 +593,11 @@ if(($scope.userTrips==undefined || $scope.userTrips==null) && userData!=undefine
 				});
     userTripInfoServices.getUserTrips(userData.userName,onUserTrips_Success);
 }
+    //This function logs out user.
     $scope.logOut=function()
     {
          if(localStorage.getItem("userData")!=undefined)
-        localStorage.getItem("userData")=null;
+       localStorage.setItem("userData",null)
         userData=null;
         $state.go('about');
     }
@@ -652,6 +656,7 @@ $scope.goToFrequentUsers =function()
     $window.location.reload(true);
 }
 })
+//This controller deals with the about page.
 app.controller('aboutPageCntrlr', function($scope,$log,$state,$ionicLoading)
 {
     //This code would ensure that the user if still active would be redirected to the weather page.
@@ -669,6 +674,7 @@ app.controller('aboutPageCntrlr', function($scope,$log,$state,$ionicLoading)
         $state.go('login')
     };
 })
+//This controller deals with the frequent users.
 app.controller('frequentUserCntrlr',function($scope,$log,$state,appUserServices,$window,$ionicLoading)
                {
 if($scope.frequentUsers==undefined || $scope.frequentUsers==null)
