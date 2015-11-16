@@ -1,9 +1,9 @@
 var services=angular.module('doraa.userServices', [])
  var userProfileURL="http://doraaServices.mybluemix.net/UserServices";
-var userEmailService="https://mandrillapp.com/api/1.0/messages/send.json";
-
+var userEmailServiceURL="https://mandrillapp.com/api/1.0/messages/send.json";
+var userTripInfoServiceURL = "http://doraaServices.mybluemix.net/UserTripInfoService";
 //This method would perform the logic of registering and login of the user.
-services.service('appUserServices',function($http,$log,$state)
+services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ionicPopup)
 {
  var emailData={};
                emailData.key='4YWCTv7jRMAq0lwLg0DqBg';
@@ -18,7 +18,7 @@ services.service('appUserServices',function($http,$log,$state)
        return{
         registerUser:function(user,callBackMethod_Success){
         var result=$http.post(userProfileURL,user);
-            result.success(function(data,status,headers,config){
+            result.success(function(data){
                 
             if(data!=null && data!="" && data!="Failure" && data!="User already present")
             {
@@ -27,24 +27,25 @@ services.service('appUserServices',function($http,$log,$state)
             }
                 else
                 {
-                    alert("A user with this username already exists. In case you forgot your password, please click on the forgot password link");
+                    showAlert("That's not right","A user with this username already exists. In case you forgot your password, please click on the forgot password link.");
                 }
             })
-            result.error(function(data,status,headers,config)
+            result.error(function(data)
             {
-                errorResponse(data,status,headers,config);
+                errorResponse(data);
            
             })
         },
          login:function(username,callBackMethod_Success){
              var handle=$http.get(userProfileURL+"?userName="+username);
-             handle.success(function(data,status,headers,config){
+             handle.success(function(data){
                  if(data!=null && data!="" && data!="Failure" && data!="User not present"){
                     
                      callBackMethod_Success(data);
                  }
                  else{
                      document.getElementById('err_UserName').innerHTML="You do not have an account or your acccount might not be active.";
+                      $ionicLoading.hide();  
                      if(document.getElementById('err_UserName').classList.contains('hide')){
                      document.getElementById('err_UserName').classList.remove('hide');
                      }
@@ -52,8 +53,8 @@ services.service('appUserServices',function($http,$log,$state)
                   //errorResponse(data,status,headers,config);
                  }
              });
-             handle.error(function(data,status,headers,config){
-                errorResponse(data,status,headers,config);
+             handle.error(function(data){
+                errorResponse(data);
              });
     },
            emailUser:function(userData,callBackMethod_Success)
@@ -62,7 +63,7 @@ services.service('appUserServices',function($http,$log,$state)
                 emailData.message.to[0].email=userData.userName;
                emailData.message.to[0].name=userData.name;
                emailData.message.html='Hi ' + userData.name + '. Thanks for registering with TraWea. To login to the Doraa application your username would be your email ID and the password for your account is <p "style=bold">'+userData.password  +'</p>';
-               var handle = $http.post(userEmailService,emailData);
+               var handle = $http.post(userEmailServiceURL,emailData);
                handle.success(function(result,status){
                    if(result!=null && result[0]!=null && result[0].status!=null && result[0].status.toUpperCase()=='SENT')
                 {
@@ -70,11 +71,11 @@ services.service('appUserServices',function($http,$log,$state)
                 }
                    else
                    {
-                        errorResponse(result,null,null,null);
+                        errorResponse(result);
                    }
                });
                handle.error(function(result){
-               errorResponse(result,null,null,null);
+               errorResponse(result);
                });
                 
            },
@@ -87,15 +88,76 @@ services.service('appUserServices',function($http,$log,$state)
                });
                               handle.error(function(result)
                {
-                   errorResponse(result,null,null,null);
+                   errorResponse(result);
                });
            },
       
     }   
-       function errorResponse(data,status,headers,config)
-{
-                $log.info(data);
-                 $log.info(headers);
-                alert("There was some problem. Please try again later");   
+       function errorResponse(data)
+{               $log.info(data);
+                $ionicLoading.hide();  
+                   showAlert('Something went wrong','We apologize for the inconvenience. Please try again later.');
 }
+    function showAlert(title,message) {
+   var alertPopup = $ionicPopup.alert({
+     title: title,
+     template: message
+   });
+   alertPopup.then(function(res) {
+     console.log('There was some problem');
+   });
+ }
+})
+
+services.service('userTripInfoServices',function($http,$log,$state, $ionicLoading,$ionicPopup)
+                 {
+     return{
+        getUserTrips:function(userName,callBackMethod_Success)
+         {
+             var handle=$http.get(userTripInfoServiceURL+ "?userName="+userName); 
+             handle.success(function(result)
+             {
+                 if(result!=null && result!=""){
+                 callBackMethod_Success(result);
+                 }
+                 else{
+                 errorResponse(result);
+                 }
+                     
+             });
+             handle.error(function(result)
+                          {
+                 errorResponse(result);
+             });
+         },
+         saveUserTrip:function(tripData,callBackMethod_Success)
+         {
+             var handle=$http.post(userTripInfoServiceURL,tripData);
+             handle.success(function(result)
+             {
+                 callBackMethod_Success(result);
+             });
+             handle.error(function(result)
+                          {
+                 errorResponse(result);
+             });
+         },
+         
+    }   
+    
+   function errorResponse(data)
+{
+     $log.info(data);  
+     $ionicLoading.hide();  
+   showAlert();   
+}
+   function showAlert() {
+   var alertPopup = $ionicPopup.alert({
+     title: 'Something went wrong',
+     template: 'We apologize for the inconvenience. Please try again later'
+   });
+   alertPopup.then(function(res) {
+     console.log('There was some problem');
+   });
+ }
 })

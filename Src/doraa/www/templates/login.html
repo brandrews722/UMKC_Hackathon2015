@@ -1,7 +1,7 @@
 
     <ion-view view-title="Login"  ng-controller="loginCtrl">
-        <ion-header-bar class="bar-positive">
-        <h1 class="title">Doraa</h1>
+        <ion-header-bar class="bar-calm">
+        <h1 class="title">Weather Trails</h1>
             
         <button class="button button-icon" ng-click="goToRegistration()">Register
               <i class="icon ion-person-add"></i>
@@ -11,6 +11,7 @@
         <form class="list" name="userForm" ng-submit="submitForm(userForm.$valid)" novalidate>
             <ion-list>
                   <div class="row" ng-class="{ 'has-error' : userForm.email.$invalid && userForm.email.$error.required && !userForm.email.$pristine }">
+                      <div class="col"></div>
             <div class="col">
                 <label class="item item-input">
                     <input id="txt_UserName" type="email" name="email1" ng-model="email" placeholder="Username/Email" ng-blur="getUserDetails()">
@@ -23,6 +24,7 @@
                 </div>
                 </div>
                 <div class="row">
+                    <div class="col"></div>
                     <div class="col">
                 <label class="item item-input passwordLabel" id="lbl_Password">
                     <input id="txt_Password" type="password" placeholder="Password" required>
@@ -35,14 +37,20 @@
             </ion-list>
             <div class="row">
                 <div class="col">
-          <button id="btn_Login" class="button button-energized button-block button-shape passwordLabel" ng-click="login()">Login
+                     <button id="btn_ReLogin" class="button button-royal button-block button-shape passwordLabel" ng-click="reloadLogin()">Login with another username
               
-            </button>   
+            </button> 
+            
                     </div>
                 <div class="col">
-                <button id="btn_ReLogin" class="button button-energized button-block button-shape passwordLabel" ng-click="reloadLogin()">Login with another username
+                <button id="btn_Login" class="button button-energized button-block button-shape passwordLabel" ng-click="login()">Login
               
-            </button>   
+            </button>
+                </div>
+                <div class="col">
+                    <button id="btn_ForgotPassword" class="button button-royal button-block button-shape passwordLabel" ng-click="forgotPassword()">Forgot password?
+              
+            </button>  
           
                 </div>
                 </div>

@@ -1,7 +1,9 @@
 <ion-view view-title="WeatherInfo" ng-controller="weatherCtrl">
     <ion-header-bar class="bar-calm">
         <h1 class="title">Weather Trails</h1>
-
+ <button class="button button-icon" ng-click="logOut()">Logout
+              <i class="icon ion-log-out"></i>
+            </button>      
 
     </ion-header-bar>
     <ion-content id="overflowControl">
@@ -32,12 +34,14 @@
                         <input id="txt_time" ng-controller="timeController" type="time" ng-model="model.time" placeholder="Time" formatted-time>
                     </label>
                 </div>
+              <div class="col">
+                  
+                 <button class="button button-balanced button-block" style="margin-top:0px!important;margin-bottom:0px!important;" ng-click="saveTripInfo()">Show route</button>
+                 
+                </div>  
+                
             </div>
-            <button class="button button-balanced button-block " ng-click="doEverything()">Show route</button>
-            <!--               <button class="button button-positive button-block ">History</button> -->
-
-
-
+           
             <div id="map"> </div>
             <div class="row">
                 <div class="col" id="weatherStart"></div>

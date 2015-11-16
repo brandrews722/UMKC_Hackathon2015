@@ -2,11 +2,11 @@
 <ion-tabs class="tabs-icon-top tabs-color-active-positive" ng-controller="tabsContrlr">
 
    
-     <ion-tab title="Weather information" icon-off="ion-ios-partlysunny-outline" icon-on="ion-ios-partlysunny">
+     <ion-tab title="Weather information" icon-off="ion-ios-partlysunny-outline" icon-on="ion-ios-partlysunny" ng-click="goToWeatherInfo()">
    
          <ion-nav-view name="WeatherInfoPage"></ion-nav-view>
   </ion-tab>
-    <ion-tab title="Your recent trips" icon-off="ion-ios-box-outline" icon-on="ion-ios-box">
+    <ion-tab title="Your recent trips" icon-off="ion-ios-box-outline" icon-on="ion-ios-box" ng-click="goToHistory()">
    
          <ion-nav-view name="HistoryPage"></ion-nav-view>
   </ion-tab>

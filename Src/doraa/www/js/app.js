@@ -40,6 +40,13 @@ var app=angular.module('doraa', ['ionic','doraa.controllers'])
       abstract:true,
       template:'<ion-nav-view name="Dashboard"></ion-nav-view>'
   })
+  
+  .state('about',{
+  url:'/about',
+       templateUrl: 'templates/about.html',
+          controller: 'aboutPageCntrlr'
+  })
+  
 
       .state('login',{
   url:'/login',

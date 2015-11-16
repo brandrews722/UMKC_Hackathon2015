@@ -1,9 +1,46 @@
 <ion-view view-title="History"  ng-controller="historyCtrl">
-        <ion-header-bar class="bar-balanced">
-        <h1 class="title">Doraa</h1>
-            
-        
-        </ion-header-bar>
-    
+        <ion-header-bar class="bar-calm">
+        <h1 class="title">Weather Trails</h1>
+      <button class="button button-icon" ng-click="logOut()">Logout
+              <i class="icon ion-log-out"></i>
+            </button>       
+    </ion-header-bar>
+    <ion-content style="overflow-y:scroll">
+         <ion-list>
+               <ion-item ng-show="!userTrips.length">
+                   
+         <p style="font-weight:bold;text-align:center"> You seriously need to take a trip !!!!!</p>
+                   <div class="row">
+                       <div class="col"></div>
+                       <div class="col">
+             <img id='elNino' src='http://i.kinja-img.com/gawker-media/image/upload/s--tI4ZDhBj--/na2jhagaer4erqt9vqqj.gif'>
+                       </div>
+                    <div class="col"></div>
+                      
+                   </div>
+          </ion-item>
+              <ion-item ng-repeat="trip in userTrips">
+        <div class="card">
+  <div class="item item-divider">
+   {{trip.source}}
+  </div>
+  <div class="item item-text-wrap">
+    <p>Date : {{trip.startDate}}</p>
+      <p>Time : {{trip.startTime}}</p>
+  </div>
+  <div class="item item-divider">
+    {{trip.destination}}
+  </div>
+</div>
+             </ion-item>
+        </ion-list>
+<!--
+    <div class="card" ng-repeat="trip in userTrips">
+  <div class="item item-text-wrap">
+    <p>{{trip.source}}   {{trip.destination}}</p>
+  </div>
+</div>
+-->
+    </ion-content>
   
 </ion-view>
