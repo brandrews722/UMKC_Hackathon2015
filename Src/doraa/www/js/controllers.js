@@ -1,218 +1,199 @@
-var appController = angular.module('doraa.controllers', ['ionic','doraa.userServices'])
+var appController = angular.module('doraa.controllers', ['ionic', 'doraa.userServices'])
 
 //This is the controller for the login page functionality.
 var userData;
 
-appController.controller('loginCtrl', function($scope,$state,appUserServices,$window,$ionicLoading,$ionicPopup) {
-    var loginFailedCount=0;
-     $scope.userName=""
-     $scope.password="";
- 
-    
-$scope.getUserDetails =function()
-{
-    
-   $scope.userName = document.getElementById('txt_UserName').value; 
-     if($scope.userName!=null && $scope.userName!="" && loginFailedCount==0)
-    {
-         userData=null;
-          $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-        appUserServices.getUser($scope.userName,onUserNameFound_Success);
-    }
-}
-    $scope.login = function()
-{   
-  
-     $scope.password = document.getElementById('txt_Password').value;
-   if($scope.password!=null && userData!=null && userData.password!=null)
-   {
-          loginFailedCount++;
-       if(loginFailedCount<3){
-       if(userData.password != $scope.password)
-       {
-         
-           document.getElementById('err_Password').innerHTML="You have " + (3-loginFailedCount) + " attempts left. "
-           if(document.getElementById('err_Password').classList.contains('hide')){
-           document.getElementById('err_Password').classList.remove('hide');
-       }
-          
-       }
-       else{
-        loginFailedCount=0;
-      
-       $state.go('main.dashboard.weather');
-       }
-       }
-       else
-       {
-           $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-           appUserServices.deactivateUser(userData,onUserDeactivated_Success);
-     
-       }
-   }
-        else
-        {
-            showAlert("Something went wrong","We apologize for the inconvenience. Please try again later.");
-        }
- 
-    
-}
-      function showAlert(title,message) {
-   var alertPopup = $ionicPopup.alert({
-     title: title,
-     template: message
-   });
-   alertPopup.then(function(res) {
-     console.log('There was some problem');
-   });
- }
-    
-$scope.goToRegistration =function()
-{
-    $state.go('register')
-}
-$scope.reloadLogin =function()
-{
-   $window.location.reload(true);
-}
-   function onUserNameFound_Success(data)
-    {
-       
-        if(data!=null)
-        {
-        loginFailedCount=0;
-            userData = data;
-           
-            if(userData.userName==$scope.userName)
-            {
-                document.getElementById('txt_UserName').disabled=true;
-                if(document.getElementById('lbl_Password').classList.contains('passwordLabel')){
-               document.getElementById('lbl_Password').classList.remove('passwordLabel');
-                document.getElementById('btn_Login').classList.remove('passwordLabel');
-                    document.getElementById('btn_ReLogin').classList.remove('passwordLabel');
-                      document.getElementById('btn_ForgotPassword').classList.remove('passwordLabel');                   
-                    
-                }
-                document.getElementById('err_UserName').classList.add('hide');
-                loginFailedCount=0;
-            }
-            else
-            {
-                $ionicLoading.hide();     
-                document.getElementById('err_UserName').innerHTML="You do not have an account or your acccount might not be active.";
-                     document.getElementById('err_UserName').classes.remove('hide');
-            }
-                
-        }
-         $ionicLoading.hide();
-    }
-    $scope.forgotPassword =function()
-    {
-          $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-        appUserServices.emailUser(userData,onEmailSend_Success); 
-    }
-    function onUserDeactivated_Success(result)
-    {
-              document.getElementById('err_Password').innerHTML= "Your account has been deactivated";
-        //To hide the forgot password button
-        if(!document.getElementById('btn_ForgotPassword').classList.contains('passwordLabel'))
-        {
-            document.getElementById('btn_ForgotPassword').classList.add('passwordLabel');
-        }
-            if(document.getElementById('err_Password').classList.contains('hide')){
-                 
-           document.getElementById('err_Password').classList.remove('hide');
-               
-                
-       }
-        $ionicLoading.hide();
-    }
-   
-})
-//This is the controller for the registration page functionality.
-appController.controller('signUpController', function($scope,$state,$http,appUserServices,$ionicLoading,$ionicPopup) {
-    document.getElementById('txt_Name').value ="";
-    document.getElementById('txt_userName').value ="";
+appController.controller('loginCtrl', function ($scope, $state, appUserServices, $window, $ionicLoading, $ionicPopup) {
+        var loginFailedCount = 0;
+        $scope.userName = ""
+        $scope.password = "";
 
- //Redirect to the login page after successfull registration.
-    $scope.goToLoginPage =function()
- {
-     $state.go('login');
- }
- //Submit the user registration data to the database.
- $scope.submitForm = function(isValid) {
-$scope.userToBeAdded={};
-		// check to make sure the form is completely valid
-		if (isValid) { 
-           $scope.userToBeAdded.name= document.getElementById('txt_Name').value;
-            $scope.userToBeAdded.userName=document.getElementById('txt_userName').value;
-            $scope.userToBeAdded.password =generatePassword($scope.userToBeAdded.name);
-            $scope.userToBeAdded.uerLoginCount=0;
-            $scope.userToBeAdded.status="Active";
-          
-            if($scope.userToBeAdded!=null)
-            {
+
+        $scope.getUserDetails = function () {
+
+            $scope.userName = document.getElementById('txt_UserName').value;
+            if ($scope.userName != null && $scope.userName != "" && loginFailedCount == 0) {
+                userData = null;
                 $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-                appUserServices.registerUser($scope.userToBeAdded,onUserRegistration_Success);
+                    template: 'Please wait...'
+                });
+                appUserServices.getUser($scope.userName, onUserNameFound_Success);
             }
-	        
-		}
+        }
+        $scope.login = function () {
 
-	};
-    function onUserRegistration_Success(response,user)
-    {
-       if(response!=null)
-       {
-           appUserServices.emailUser(user,onEmailSend_Success);    
-           
-       }
+            $scope.password = document.getElementById('txt_Password').value;
+            if ($scope.password != null && userData != null && userData.password != null) {
+                loginFailedCount++;
+                if (loginFailedCount < 3) {
+                    if (userData.password != $scope.password) {
+
+                        document.getElementById('err_Password').innerHTML = "You have " + (3 - loginFailedCount) + " attempts left. "
+                        if (document.getElementById('err_Password').classList.contains('hide')) {
+                            document.getElementById('err_Password').classList.remove('hide');
+                        }
+
+                    } else {
+                        loginFailedCount = 0;
+
+                        $state.go('main.dashboard.weather');
+                    }
+                } else {
+                    $ionicLoading.show({
+                        template: 'Please wait...'
+                    });
+                    appUserServices.deactivateUser(userData, onUserDeactivated_Success);
+
+                }
+            } else {
+                showAlert("Something went wrong", "We apologize for the inconvenience. Please try again later.");
+            }
+
+
+        }
+
+        function showAlert(title, message) {
+            var alertPopup = $ionicPopup.alert({
+                title: title,
+                template: message
+            });
+            alertPopup.then(function (res) {
+                console.log('There was some problem');
+            });
+        }
+
+        $scope.goToRegistration = function () {
+            $state.go('register')
+        }
+        $scope.reloadLogin = function () {
+            $window.location.reload(true);
+        }
+
+        function onUserNameFound_Success(data) {
+
+            if (data != null) {
+                loginFailedCount = 0;
+                userData = data;
+
+                if (userData.userName == $scope.userName) {
+                    document.getElementById('txt_UserName').disabled = true;
+                    if (document.getElementById('lbl_Password').classList.contains('passwordLabel')) {
+                        document.getElementById('lbl_Password').classList.remove('passwordLabel');
+                        document.getElementById('btn_Login').classList.remove('passwordLabel');
+                        document.getElementById('btn_ReLogin').classList.remove('passwordLabel');
+                        document.getElementById('btn_ForgotPassword').classList.remove('passwordLabel');
+
+                    }
+                    document.getElementById('err_UserName').classList.add('hide');
+                    loginFailedCount = 0;
+                } else {
+                    $ionicLoading.hide();
+                    document.getElementById('err_UserName').innerHTML = "You do not have an account or your acccount might not be active.";
+                    document.getElementById('err_UserName').classes.remove('hide');
+                }
+
+            }
+            $ionicLoading.hide();
+        }
+        $scope.forgotPassword = function () {
+            $ionicLoading.show({
+                template: 'Please wait...'
+            });
+            appUserServices.emailUser(userData, onEmailSend_Success);
+        }
+
+        function onUserDeactivated_Success(result) {
+            document.getElementById('err_Password').innerHTML = "Your account has been deactivated";
+            //To hide the forgot password button
+            if (!document.getElementById('btn_ForgotPassword').classList.contains('passwordLabel')) {
+                document.getElementById('btn_ForgotPassword').classList.add('passwordLabel');
+            }
+            if (document.getElementById('err_Password').classList.contains('hide')) {
+
+                document.getElementById('err_Password').classList.remove('hide');
+
+
+            }
+            $ionicLoading.hide();
+        }
+
+    })
+    //This is the controller for the registration page functionality.
+appController.controller('signUpController', function ($scope, $state, $http, appUserServices, $ionicLoading, $ionicPopup) {
+    document.getElementById('txt_Name').value = "";
+    document.getElementById('txt_userName').value = "";
+
+    //Redirect to the login page after successfull registration.
+    $scope.goToLoginPage = function () {
+            $state.go('login');
+        }
+        //Submit the user registration data to the database.
+    $scope.submitForm = function (isValid) {
+        $scope.userToBeAdded = {};
+        // check to make sure the form is completely valid
+        if (isValid) {
+            $scope.userToBeAdded.name = document.getElementById('txt_Name').value;
+            $scope.userToBeAdded.userName = document.getElementById('txt_userName').value;
+            $scope.userToBeAdded.password = generatePassword($scope.userToBeAdded.name);
+            $scope.userToBeAdded.uerLoginCount = 0;
+            $scope.userToBeAdded.status = "Active";
+
+            if ($scope.userToBeAdded != null) {
+                $ionicLoading.show({
+                    template: 'Please wait...'
+                });
+                appUserServices.registerUser($scope.userToBeAdded, onUserRegistration_Success);
+            }
+
+        }
+
+    };
+
+    function onUserRegistration_Success(response, user) {
+        if (response != null) {
+            appUserServices.emailUser(user, onEmailSend_Success);
+
+        }
     }
-    function onEmailSend_Success(response)
-    {
-         $ionicLoading.hide();
-        showAlert("Thank you " +  $scope.userToBeAdded.name, "You would receive your password to " +  $scope.userToBeAdded.userName );
-         
-                $state.go('login');  
+
+    function onEmailSend_Success(response) {
+        $ionicLoading.hide();
+        showAlert("Thank you " + $scope.userToBeAdded.name, "You would receive your password to " + $scope.userToBeAdded.userName);
+
+        $state.go('login');
     }
-    function generatePassword(key)
-    {
+
+    function generatePassword(key) {
         var prefix = "";
-   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-   for( var i=0; i < 5; i++ ){
-       prefix += possible.charAt(Math.floor(Math.random() * possible.length));
+        for (var i = 0; i < 5; i++) {
+            prefix += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return (key + prefix);
     }
-        return (key+prefix);
+
+    function showAlert(title, message) {
+        var alertPopup = $ionicPopup.alert({
+            title: title,
+            template: message
+        });
+        alertPopup.then(function (res) {
+            console.log('There was some problem');
+        });
     }
-          function showAlert(title,message) {
-   var alertPopup = $ionicPopup.alert({
-     title: title,
-     template: message
-   });
-   alertPopup.then(function(res) {
-     console.log('There was some problem');
-   });
- }
 
 })
 
-appController.controller('weatherCtrl', function ($scope, $state, $http, $filter, weatherFactory, latLngFactory,userTripInfoServices,$ionicLoading,$ionicPopup) {
+appController.controller('weatherCtrl', function ($scope, $state, $http, $filter, weatherFactory, latLngFactory, userTripInfoServices, $ionicLoading, $ionicPopup) {
     $scope.data = {};
     $scope.data.date = new Date(); //sets current date
     console.log("dater", $scope.data.date.toUTCString());
 
 
-        var middleResponseArr = [];
-        var middleResponseArrSumm = [];
-        var middleResponseArrDate = [];
+    var middleResponseArr = [];
+    var middleResponseArrSumm = [];
+    var middleResponseArrDate = [];
 
 
     var sourcePlace;
@@ -256,7 +237,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
         function handleNoGeolocation(errorFlag) {
             //Failure of the service.##
             if (errorFlag == true) {
-                showAlert("Geolocation service failed.","Your browser does not support it.");
+                showAlert("Geolocation service failed.", "Your browser does not support it.");
                 initialLocation = newyork;
             } else {
                 showAlert("Your browser doesn't support geolocation", "We've placed you in Siberia.");
@@ -265,62 +246,55 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
             $scope.map.setCenter(initialLocation);
         }
 
-        
+
     }
-          
-//This function would save the details about the trip that the user is creating.
-$scope.saveTripInfo =function()
-{
-    if(userData!=undefined && userData!=null && userData.userName!=null && userData.userName!=""){
-   $scope.tripInfo={};
-   $scope.tripInfo.userName= userData.userName;
-    $scope.tripInfo.source=document.getElementById('txt_SourcePlace').value;
-    $scope.tripInfo.destination=document.getElementById('txt_DestinationPlace').value;
-    $scope.tripInfo.startDate =document.getElementById('txt_date').value;
-    $scope.tripInfo.startTime=document.getElementById('txt_time').value;
-        if($scope.tripInfo!=null && $scope.tripInfo.userName!=null)
-        {
-              $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-            userTripInfoServices.saveUserTrip($scope.tripInfo,onTripInfoSaved_Success)
+
+    //This function would save the details about the trip that the user is creating.
+    $scope.saveTripInfo = function () {
+            if (userData != undefined && userData != null && userData.userName != null && userData.userName != "") {
+                $scope.tripInfo = {};
+                $scope.tripInfo.userName = userData.userName;
+                $scope.tripInfo.source = document.getElementById('txt_SourcePlace').value;
+                $scope.tripInfo.destination = document.getElementById('txt_DestinationPlace').value;
+                $scope.tripInfo.startDate = document.getElementById('txt_date').value;
+                $scope.tripInfo.startTime = document.getElementById('txt_time').value;
+                if ($scope.tripInfo != null && $scope.tripInfo.userName != null) {
+                    $ionicLoading.show({
+                        template: 'Please wait...'
+                    });
+                    userTripInfoServices.saveUserTrip($scope.tripInfo, onTripInfoSaved_Success)
+                }
+            } else {
+                showAlert("Session expired", "Please try to login and try again");
+            }
         }
-    }
-    else
-    {
-        showAlert("Session expired","Please try to login and try again");
-    }
-}
-//This function would save the user data for keeping him active.
- $scope.rememberUser=function()
-    {
-     //This would store the user credentials till he logs out.   
-     if(userData!=null)
-        {
-            localStorage.setItem("userData",JSON.stringify(userData));
+        //This function would save the user data for keeping him active.
+    $scope.rememberUser = function () {
+            //This would store the user credentials till he logs out.   
+            if (userData != null) {
+                localStorage.setItem("userData", JSON.stringify(userData));
+            }
         }
+        //This is a custom alert pop up display function.
+    function showAlert(title, message) {
+        var alertPopup = $ionicPopup.alert({
+            title: title,
+            template: message
+        });
+        alertPopup.then(function (res) {
+            console.log('There was some problem');
+        });
     }
- //This is a custom alert pop up display function.
-function showAlert(title,message) {
-   var alertPopup = $ionicPopup.alert({
-     title: title,
-     template: message
-   });
-   alertPopup.then(function(res) {
-     console.log('There was some problem');
-   });
- }
-function onTripInfoSaved_Success(result)
-    {
-        if(result!=null)
-        {
+
+    function onTripInfoSaved_Success(result) {
+        if (result != null) {
             $scope.doEverything();
         }
     }
 
     //function to load directions and get weather events for the start and end points
     $scope.doEverything = function () {
-
+        //calculates and displays the route between two points
         function calculateAndDisplayRoute(directionsService, directionsDisplay) {
             directionsService.route({
                 origin: document.getElementById('txt_SourcePlace').value,
@@ -329,10 +303,10 @@ function onTripInfoSaved_Success(result)
             }, function (response, status) {
                 if (status === google.maps.DirectionsStatus.OK) {
                     console.log("logging", response.routes[0].legs[0].duration.value);
-                    localStorage.setItem("duration", response.routes[0].legs[0].duration.value);
+                    localStorage.setItem("duration", response.routes[0].legs[0].duration.value); //duration is logged for trip duration
                     directionsDisplay.setDirections(response);
                 } else {
-                    showAlert("Directions request failed" ,"Regret the inconvenience caused. Please try again");
+                    showAlert("Directions request failed", "Regret the inconvenience caused. Please try again");
                 }
             });
         }
@@ -347,18 +321,21 @@ function onTripInfoSaved_Success(result)
                 lng: -87.65
             }
         });
-        directionsDisplay.setMap(map);
+
+        directionsDisplay.setMap(map); //displays directions
         calculateAndDisplayRoute(directionsService, directionsDisplay);
+        //sets weather for start and end points
         weatherFactory.getWeatherStart();
         weatherFactory.getWeatherEnd();
-        console.log("123", localStorage.getItem('latStart'));
+
+
         //get weather middle
         var latStart = parseFloat(localStorage.getItem('latStart')),
             lngStart = parseFloat(localStorage.getItem('lngStart')),
             latEnd = parseFloat(localStorage.getItem('latEnd')),
             lngEnd = parseFloat(localStorage.getItem('lngEnd'));
 
-        console.log(latStart);
+        //formula for calculating new points of interest along the route for weather, see documentation for psuedo algorithm
         var latDistance = latEnd - latStart;
         var lngDistance = lngEnd - lngStart;
         console.log("lngEnd", lngEnd);
@@ -367,76 +344,55 @@ function onTripInfoSaved_Success(result)
         console.log("durdur", localStorage.getItem('duration'));
         console.log(pts);
         var weatherLatArr = [],
-            weatherLngArr = []
-        ;
-
+            weatherLngArr = [];
+        //calculates intermediate weather positions
         for (var i = 1; i < Math.floor(pts); i++) {
             weatherLatArr.push(((i * latDistance) / Math.floor(pts)) + latStart);
             weatherLngArr.push(((i * lngDistance) / Math.floor(pts)) + lngStart);
             weatherFactory.getWeatherMiddle((((i * latDistance) / Math.floor(pts)) + latStart), (((i * lngDistance) / Math.floor(pts)) + lngStart), i).then(function (response) {
                 document.getElementById("weatherIncrements").innerHTML = "<div id='row' class='travelWeather'>Travel Weather</div>";
-
+                //passes object data to consolidate and dynamically create HTML
                 consolidateArr(response.key, response.value.data.currently.temperature, response.value.data.currently.summary, response.date);
-                console.log("--------------", response);
-                console.log("%%%%%%%%%", middleResponseArr);
-               
+
             });
         };
-        console.log("***************", middleResponseArr);
-
-        placeinUI();
-        console.log(weatherLatArr);
-        console.log(weatherLngArr);
-  $ionicLoading.hide();
-        //       // weatherFactory.getWeatherMiddle();
-        //        document.getElementById("weatherIncrements").innerHTML = "<img id='elNino' src='http://i.kinja-img.com/gawker-media/image/upload/s--tI4ZDhBj--/na2jhagaer4erqt9vqqj.gif'>";
-
-
 
     }
 
+    //called above.  dynamically creates html elements hours, temperature, and weather summary
     function consolidateArr(key, temp, summ, date) {
 
         middleResponseArr[key - 1] = temp;
         middleResponseArrSumm[key - 1] = summ;
         middleResponseArrDate[key - 1] = date;
-         console.log("ggsfhsfhs" + middleResponseArr);
-        console.log("ggsfhsfhs" + middleResponseArrSumm);
-        console.log("ggsfhsfhs" + middleResponseArrDate);
-        
-        for(var i=0; i<middleResponseArr.length; i++){
-            var time = parseInt(i)+1;
-            document.getElementById("weatherIncrements").innerHTML += "<div class='row' id='weatherRows'><div class='col'>Hour " + time + "</div><div class='col'>" + middleResponseArr[i]+ "&deg;</div><div class='col'>" + middleResponseArrSumm[i] + "</div></div>";
+
+        for (var i = 0; i < middleResponseArr.length; i++) {
+            var time = parseInt(i) + 1;
+            document.getElementById("weatherIncrements").innerHTML += "<div class='row' id='weatherRows'><div class='col'>Hour " + time + "</div><div class='col'>" + middleResponseArr[i] + "&deg;</div><div class='col'>" + middleResponseArrSumm[i] + "</div></div>";
         }
-        
-        
+
+
     }
 
-    function placeinUI() {
-        console.log("hi");
-        console.log("ggsfhsfhs" + middleResponseArr);
-        console.log("ggsfhsfhs" + middleResponseArrSumm);
-        console.log("ggsfhsfhs" + middleResponseArrDate);
-    }
     //This function logs out the user from application.
- $scope.logOut=function()
-    {
-     userData=null; 
-     if(localStorage.getItem("userData")!=undefined)
-     localStorage.setItem("userData",null);
-     $state.go('about');
+    $scope.logOut = function () {
+        userData = null;
+        if (localStorage.getItem("userData") != undefined)
+            localStorage.setItem("userData", null);
+        $state.go('about');
     }
 })
 
-
-appController.factory('weatherFactory', function ($http, latLngFactory,$ionicLoading) {
+//factory for getting the start and destination weather as well as intermediate weather.  Makes AJAX calls to Forecast.IO.  Start and End return an <iframe> that is neatly formatted.
+//Also takes in latlngFactory as a parameter
+appController.factory('weatherFactory', function ($http, latLngFactory, $ionicLoading) {
     var weatherData = [];
     var dictResponse = [];
     var dictDate = [];
 
 
     return {
-        getWeatherStart: function () {
+        getWeatherStart: function () { //returns starting weather
             var apiLink = "https://api.forecast.io/forecast/cb1b111846173e12ba6436ce2cef9817/";
             var lat1, lng1;
             latLngFactory.getStart().then(function (latLngData) {
@@ -494,7 +450,6 @@ appController.factory('weatherFactory', function ($http, latLngFactory,$ionicLoa
 
                     return $http.get(apiLink).then(function (response) {
                         weatherData = response;
-                        console.log("weatherData: ", weatherData);
                         //                        document.getElementById("weatherStart").innerHTML = "";
                         document.getElementById("weatherEnd").innerHTML = "<iframe id='forecast_embed' type='text/html' frameborder='0' height='245' width='100%' src='http://forecast.io/embed/#lat=" + lat1 + "&lon=" + lng1 + "&name=" + locality + "&color=#00aaff&font=Georgia&units=us'> </iframe>";
                         return weatherData;
@@ -504,8 +459,6 @@ appController.factory('weatherFactory', function ($http, latLngFactory,$ionicLoa
         },
         getWeatherMiddle: function (latVal, lngVal, hour) {
             //https://api.forecast.io/forecast/APIKEY/LATITUDE,LONGITUDE,TIME
-            console.log("latVal", latVal);
-
             var apiLink = "https://api.forecast.io/forecast/cb1b111846173e12ba6436ce2cef9817/";
             apiLink += latVal;
             apiLink += ",";
@@ -542,8 +495,8 @@ appController.factory('weatherFactory', function ($http, latLngFactory,$ionicLoa
 
 
 })
-
-appController.factory('latLngFactory', function ($http,$ionicLoading) {
+//converts a google places string to a latitude and longitude by making an AJAX call to Google Geocoding service
+appController.factory('latLngFactory', function ($http, $ionicLoading) {
     var latLngData = [];
 
     //takes a string of a google places response and replaces white space with plus signs
@@ -586,31 +539,29 @@ appController.factory('latLngFactory', function ($http,$ionicLoading) {
 })
 
 //This is the controller that deals with the trip history of the user.
-appController.controller('historyCtrl', function ($scope, $state,userTripInfoServices,$ionicLoading) {
-if(($scope.userTrips==undefined || $scope.userTrips==null) && userData!=undefined && userData!=null && userData.userName!=undefined && userData.userName!=null){
-    $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-    userTripInfoServices.getUserTrips(userData.userName,onUserTrips_Success);
-}
+appController.controller('historyCtrl', function ($scope, $state, userTripInfoServices, $ionicLoading) {
+    if (($scope.userTrips == undefined || $scope.userTrips == null) && userData != undefined && userData != null && userData.userName != undefined && userData.userName != null) {
+        $ionicLoading.show({
+            template: 'Please wait...'
+        });
+        userTripInfoServices.getUserTrips(userData.userName, onUserTrips_Success);
+    }
     //This function logs out user.
-    $scope.logOut=function()
-    {
-         if(localStorage.getItem("userData")!=undefined)
-       localStorage.setItem("userData",null)
-        userData=null;
+    $scope.logOut = function () {
+        if (localStorage.getItem("userData") != undefined)
+            localStorage.setItem("userData", null)
+        userData = null;
         $state.go('about');
     }
-    function onUserTrips_Success(data)
-    {
-        if(data!="No trips present")
-        {
-            $scope.userTrips=data;
+
+    function onUserTrips_Success(data) {
+        if (data != "No trips present") {
+            $scope.userTrips = data;
         }
-       $ionicLoading.hide();
+        $ionicLoading.hide();
     }
-    
-    
+
+
 })
 
 //creates a date object (time)
@@ -638,56 +589,45 @@ appController.directive('formattedTime', function ($filter) {
     };
 });
 //This controller handles the logic to redirect to the home page.
-app.controller('tabsContrlr',function($scope,$state,$log)
-               {
-$scope.goToWeatherInfo=function()
-{
-$state.go('main.dashboard.weather');
-    $window.location.reload(true);
-}
-$scope.goToHistory = function()
-{
-    $state.go('main.dashboard.history');
-    $window.location.reload(true);
-}
-$scope.goToFrequentUsers =function()
-{
-    $state.go('main.dashboard.frequentUsers');
-    $window.location.reload(true);
-}
-})
-//This controller deals with the about page.
-app.controller('aboutPageCntrlr', function($scope,$log,$state,$ionicLoading)
-{
-    //This code would ensure that the user if still active would be redirected to the weather page.
-    if(localStorage.getItem("userData")!=undefined && localStorage.getItem("userData")!=null)
-    {
-        userData=localStorage.getItem("userData");
-        $state.go('main.dashboard.weather');
+app.controller('tabsContrlr', function ($scope, $state, $log) {
+        $scope.goToWeatherInfo = function () {
+            $state.go('main.dashboard.weather');
+            $window.location.reload(true);
+        }
+        $scope.goToHistory = function () {
+            $state.go('main.dashboard.history');
+            $window.location.reload(true);
+        }
+        $scope.goToFrequentUsers = function () {
+            $state.go('main.dashboard.frequentUsers');
+            $window.location.reload(true);
+        }
+    })
+    //This controller deals with the about page.
+app.controller('aboutPageCntrlr', function ($scope, $log, $state, $ionicLoading) {
+        //This code would ensure that the user if still active would be redirected to the weather page.
+        if (localStorage.getItem("userData") != undefined && localStorage.getItem("userData") != null) {
+            userData = localStorage.getItem("userData");
+            $state.go('main.dashboard.weather');
+        }
+        $scope.goToRegistration = function () {
+            $state.go('register');
+        };
+        $scope.goToLoginPage = function () {
+            $state.go('login')
+        };
+    })
+    //This controller deals with the frequent users.
+app.controller('frequentUserCntrlr', function ($scope, $log, $state, appUserServices, $window, $ionicLoading) {
+    if ($scope.frequentUsers == undefined || $scope.frequentUsers == null) {
+        $ionicLoading.show({
+            template: 'Please wait...'
+        });
+        appUserServices.getUser("", onFrequentUsers_Success);
     }
-    $scope.goToRegistration = function()
-    {
-        $state.go('register');
-    };
-    $scope.goToLoginPage = function()
-    {
-        $state.go('login')
-    };
-})
-//This controller deals with the frequent users.
-app.controller('frequentUserCntrlr',function($scope,$log,$state,appUserServices,$window,$ionicLoading)
-               {
-if($scope.frequentUsers==undefined || $scope.frequentUsers==null)
-{
-      $ionicLoading.show({
-				  template: 'Please wait...'
-				});
-    appUserServices.getUser("",onFrequentUsers_Success);
-}
-    function onFrequentUsers_Success(result)
-    {
-        if(result!=null)
-        {
+
+    function onFrequentUsers_Success(result) {
+        if (result != null) {
             $scope.frequentUsers = result;
         }
         $ionicLoading.hide();
