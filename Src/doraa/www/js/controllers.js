@@ -179,7 +179,7 @@ $scope.userToBeAdded={};
          $ionicLoading.hide();
         showAlert("Thank you " +  $scope.userToBeAdded.name, "You would receive your password to " +  $scope.userToBeAdded.userName );
          
-                $state.go('about');  
+                $state.go('login');  
     }
     function generatePassword(key)
     {

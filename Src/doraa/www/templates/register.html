@@ -10,8 +10,9 @@
     <ion-content padding="true" scroll="false" class="has-header">
        <form class="list" name="userForm" ng-submit="submitForm(userForm.$valid)" novalidate>
 
-        
+     
         <div class="row" ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }">
+            <div class="col"></div>
             <div class="col">
           <label class="item item-input">
             <input type="text" id="txt_Name" name="name" ng-bind="name" required placeholder="Name">
@@ -23,6 +24,7 @@
         </div>
 
         <div class="row" ng-class="{ 'has-error' : userForm.email.$invalid && userForm.email.$error.required && !userForm.email.$pristine }">
+            <div class="col"></div>
             <div class="col">
             <label class="item item-input">
             <input type="email" id="txt_userName" name="email"  ng-model="email" required placeholder="Username/Email">
@@ -33,7 +35,12 @@
             <p class ="errorText" ng-show="userForm.email.$error.required" class="help-block">Email required.</p>
                 </div>
         </div>
-        
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
         <button type="submit" class="button button-dark button-block button-shape">Sign up</button>
+                </div>
+            <div class="col"></div>
+            </div>
     </ion-content>
 </ion-view>

@@ -13,7 +13,7 @@ services.service('appUserServices',function($http,$log,$state,$ionicLoading,$ion
                 emailData.message.to[0]={};
                emailData.message.to[0].type='to';
                emailData.message.autotext='true';
-               emailData.message.subject="TraWea services email verification mail.";
+               emailData.message.subject="Weather Trails services email verification mail.";
              
        return{
         registerUser:function(user,callBackMethod_Success){
