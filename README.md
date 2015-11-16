@@ -70,17 +70,29 @@ information should be relevant – especially for trips less than 8 hours in len
 to be a reasonable driving distance for 1 day).
 
 APIs used:
+
 •	Forecast.io
+
 •	Google Maps/Places
+
 •	Google Directions
+
 •	Google Geocoding
+
 Services used
+
 •	IBM Bluemix
+
 Technologies Used
+
 •	MongoDB
+
 •	AJAX
+
 •	Ionic
+
 •	AngularJS
+
 •	Java
 
 *Note - our application requires the Chrome plug-in: Cors.
