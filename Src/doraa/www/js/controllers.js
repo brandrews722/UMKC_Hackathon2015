@@ -589,45 +589,57 @@ appController.directive('formattedTime', function ($filter) {
     };
 });
 //This controller handles the logic to redirect to the home page.
-app.controller('tabsContrlr', function ($scope, $state, $log) {
-        $scope.goToWeatherInfo = function () {
-            $state.go('main.dashboard.weather');
-            $window.location.reload(true);
-        }
-        $scope.goToHistory = function () {
-            $state.go('main.dashboard.history');
-            $window.location.reload(true);
-        }
-        $scope.goToFrequentUsers = function () {
-            $state.go('main.dashboard.frequentUsers');
-            $window.location.reload(true);
-        }
-    })
-    //This controller deals with the about page.
-app.controller('aboutPageCntrlr', function ($scope, $log, $state, $ionicLoading) {
-        //This code would ensure that the user if still active would be redirected to the weather page.
-        if (localStorage.getItem("userData") != undefined && localStorage.getItem("userData") != null) {
-            userData = localStorage.getItem("userData");
-            $state.go('main.dashboard.weather');
-        }
-        $scope.goToRegistration = function () {
-            $state.go('register');
-        };
-        $scope.goToLoginPage = function () {
-            $state.go('login')
-        };
-    })
-    //This controller deals with the frequent users.
-app.controller('frequentUserCntrlr', function ($scope, $log, $state, appUserServices, $window, $ionicLoading) {
-    if ($scope.frequentUsers == undefined || $scope.frequentUsers == null) {
-        $ionicLoading.show({
-            template: 'Please wait...'
-        });
-        appUserServices.getUser("", onFrequentUsers_Success);
+app.controller('tabsContrlr',function($scope,$state,$log)
+               {
+$scope.goToWeatherInfo=function()
+{
+$state.go('main.dashboard.weather');
+    $window.location.reload(true);
+}
+$scope.goToHistory = function()
+{
+    $state.go('main.dashboard.history');
+    $window.location.reload(true);
+}
+$scope.goToFrequentUsers =function()
+{
+    $state.go('main.dashboard.frequentUsers');
+    $window.location.reload(true);
+}
+})
+//This controller deals with the about page.
+app.controller('aboutPageCntrlr', function($scope,$log,$state,$ionicLoading)
+{
+    //This code would ensure that the user if still active would be redirected to the weather page.
+    if(localStorage.getItem("userData")!=undefined && localStorage.getItem("userData")!=null && localStorage.getItem("userData")!="null")
+    {
+        var userInfo = localStorage.getItem("userData");//JSON.stringify(eval("(" + localStorage.getItem("userData") + ")"));
+        userData= JSON.parse(userInfo);
+        $state.go('main.dashboard.weather');
     }
-
-    function onFrequentUsers_Success(result) {
-        if (result != null) {
+    $scope.goToRegistration = function()
+    {
+        $state.go('register');
+    };
+    $scope.goToLoginPage = function()
+    {
+        $state.go('login');
+    };
+})
+//This controller deals with the frequent users.
+app.controller('frequentUserCntrlr',function($scope,$log,$state,appUserServices,$window,$ionicLoading)
+               {
+if($scope.frequentUsers==undefined || $scope.frequentUsers==null)
+{
+      $ionicLoading.show({
+				  template: 'Please wait...'
+				});
+    appUserServices.getUser("",onFrequentUsers_Success);
+}
+    function onFrequentUsers_Success(result)
+    {
+        if(result!=null)
+        {
             $scope.frequentUsers = result;
         }
         $ionicLoading.hide();
