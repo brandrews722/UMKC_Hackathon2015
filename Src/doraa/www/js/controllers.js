@@ -409,7 +409,8 @@ function onTripInfoSaved_Success(result)
     }
  $scope.logOut=function()
     {
-        $state.go('about');
+     userData=null;   
+     $state.go('about');
     }
 })
 
