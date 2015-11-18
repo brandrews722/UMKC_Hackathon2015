@@ -352,6 +352,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
             weatherFactory.getWeatherMiddle((((i * latDistance) / Math.floor(pts)) + latStart), (((i * lngDistance) / Math.floor(pts)) + lngStart), i).then(function (response) {
                 document.getElementById("weatherIncrements").innerHTML = "<div id='row' class='travelWeather'>Travel Weather</div>";
                 //passes object data to consolidate and dynamically create HTML
+                console.log("weather.... ", response);
                 consolidateArr(response.key, response.value.data.currently.temperature, response.value.data.currently.summary, response.date);
 
             });
