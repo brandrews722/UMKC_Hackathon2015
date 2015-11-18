@@ -302,6 +302,7 @@ appController.controller('weatherCtrl', function ($scope, $state, $http, $filter
                 travelMode: google.maps.TravelMode.DRIVING
             }, function (response, status) {
                 if (status === google.maps.DirectionsStatus.OK) {
+                    console.log("directions legs....", response);
                     console.log("logging", response.routes[0].legs[0].duration.value);
                     localStorage.setItem("duration", response.routes[0].legs[0].duration.value); //duration is logged for trip duration
                     directionsDisplay.setDirections(response);
